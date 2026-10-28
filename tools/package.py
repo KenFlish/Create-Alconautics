@@ -8,7 +8,7 @@ jar=root/'build/libs/create-alconautics-0.1.5.jar'
 shutil.copy2(jar,output/jar.name)
 archive=output/'create-alconautics-0.1.5-sources.zip'
 with zipfile.ZipFile(archive,'w',zipfile.ZIP_DEFLATED) as z:
-    for folder in ('src','art/source','gradle'):
+    for folder in ('src','art/source','gradle','docs'):
         for p in sorted((root/folder).rglob('*')):
             if p.is_file(): z.write(p,p.relative_to(root))
     for name in ('build.gradle','settings.gradle','gradle.properties','gradlew','gradlew.bat','README.md','LICENSE','ASSET-NOTICES.md','dependency-lock.json','.gitignore','.gitattributes'):
