@@ -47,15 +47,13 @@ public class DistilleryTests {
         });
     }
     @GameTest(template="empty",timeoutTicks=100)
-    public static void liquid_effect_details_and_record(GameTestHelper h) {
+    public static void liquid_effect_details(GameTestHelper h) {
         h.setBlock(TANK,AllBlocks.FLUID_TANK.get());
         h.runAtTickTime(15,() -> {
             FluidTankBlockEntity tank=h.getBlockEntity(TANK);
             tank.getTankInventory().fill(Content.SPIRITS.get(new Drink(Drink.Kind.SUGAR,Drink.Variant.STRONG)).stack(1000),FluidAction.EXECUTE);
             var lines=new java.util.ArrayList<net.minecraft.network.chat.Component>();DrinkTooltip.append(new Drink(Drink.Kind.SUGAR,Drink.Variant.STRONG),lines::add,20);
             h.assertTrue(lines.stream().anyMatch(c -> c.getString().contains("II")),"Stored moonshine must show its effect level using potion formatting");
-            var song=net.minecraft.world.item.JukeboxSong.fromStack(h.getLevel().registryAccess(),Content.DISC.get().getDefaultInstance());
-            h.assertTrue(song.isPresent() && song.get().value().lengthInSeconds()>70,"Music disc must resolve a playable jukebox song");
             h.succeed();
         });
     }

@@ -21,10 +21,6 @@ public final class Content {
     public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(Registries.FLUID, Alconautics.ID);
     public static final DeferredRegister<FluidType> TYPES = DeferredRegister.create(NeoForgeRegistries.Keys.FLUID_TYPES, Alconautics.ID);
     public static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create(Registries.MOB_EFFECT, Alconautics.ID);
-    public static final DeferredRegister<net.minecraft.sounds.SoundEvent> SOUNDS = DeferredRegister.create(Registries.SOUND_EVENT, Alconautics.ID);
-    public static final DeferredHolder<net.minecraft.sounds.SoundEvent,net.minecraft.sounds.SoundEvent> SONG = SOUNDS.register("music_disc.moonshiners",() -> net.minecraft.sounds.SoundEvent.createVariableRangeEvent(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(Alconautics.ID,"music_disc.moonshiners")));
-    public static final DeferredItem<Item> DISC = ITEMS.register("moonshiners_disc",() -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)
-        .jukeboxPlayable(net.minecraft.resources.ResourceKey.create(Registries.JUKEBOX_SONG,net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(Alconautics.ID,"moonshiners")))));
     private static BlockBehaviour.Properties machine() { return BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(3).sound(SoundType.COPPER).noOcclusion(); }
     public static final DeferredBlock<MachineBlock> HEAD = BLOCKS.register("distillation_head", () -> new MachineBlock(machine(), MachineBlock.Kind.HEAD));
     public static final DeferredBlock<MachineBlock> COOLER = BLOCKS.register("condenser_base", () -> new MachineBlock(machine(), MachineBlock.Kind.COOLER));
@@ -72,5 +68,5 @@ public final class Content {
     public static Drink.Kind mashKind(Fluid fluid) { return MASH.entrySet().stream().filter(e -> e.getValue().matches(fluid)).map(Map.Entry::getKey).findFirst().orElse(null); }
     public static Drink vapour(Fluid fluid) { return VAPOUR.entrySet().stream().filter(e -> e.getValue().matches(fluid)).map(Map.Entry::getKey).findFirst().orElse(null); }
     public static Drink spirit(Fluid fluid) { return SPIRITS.entrySet().stream().filter(e -> e.getValue().matches(fluid)).map(Map.Entry::getKey).findFirst().orElse(null); }
-    public static void register(IEventBus bus) { BLOCKS.register(bus); ITEMS.register(bus); BES.register(bus); TYPES.register(bus); FLUIDS.register(bus); EFFECTS.register(bus); SOUNDS.register(bus); }
+    public static void register(IEventBus bus) { BLOCKS.register(bus); ITEMS.register(bus); BES.register(bus); TYPES.register(bus); FLUIDS.register(bus); EFFECTS.register(bus); }
 }

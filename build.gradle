@@ -3,7 +3,7 @@ plugins {
     id 'net.neoforged.moddev' version '2.0.148'
 }
 group = 'dev.alconautics'
-version = '0.1.4'
+version = '0.1.5'
 base { archivesName = 'create-alconautics' }
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 repositories { mavenCentral() }
@@ -12,9 +12,10 @@ neoForge {
     runs {
         client {
             client()
-            if (project.hasProperty('visualCheck') || project.hasProperty('ponderCheck')) {
+            if (project.hasProperty('visualCheck') || project.hasProperty('ponderCheck') || project.hasProperty('renderScene')) {
                 systemProperty 'alconautics.visualCheck', 'true'
-                systemProperty 'alconautics.ponderCheck', project.hasProperty('ponderCheck').toString()
+                systemProperty 'alconautics.ponderCheck', (project.hasProperty('ponderCheck') || project.hasProperty('renderScene')).toString()
+                systemProperty 'alconautics.renderScene', project.hasProperty('renderScene').toString()
                 gameDirectory = project.file('run-visual')
             }
         }

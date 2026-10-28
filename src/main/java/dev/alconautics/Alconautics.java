@@ -23,7 +23,6 @@ public final class Alconautics {
         tabs.register("main", () -> CreativeModeTab.builder().title(Component.translatable("itemGroup.alconautics"))
             .icon(() -> Content.HEAD_ITEM.get().getDefaultInstance()).displayItems((p, out) -> {
                 out.accept(Content.HEAD_ITEM.get()); out.accept(Content.COOLER_ITEM.get()); out.accept(Content.DRY_ITEM.get());
-                out.accept(Content.DISC.get());
                 Content.DRINKS.forEach((drink, item) -> { if (drink.variant() == Drink.Variant.NORMAL) out.accept(item.get()); });
             }).build());
         tabs.register(bus);

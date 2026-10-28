@@ -77,8 +77,6 @@
   "tooltip.alconautics.cooler_idle": "Condenser status: Not running",
   "tooltip.alconautics.status_header": "Distillation apparatus status",
   "tooltip.alconautics.kind_label": "Type: ",
-  "item.alconautics.moonshiners_disc": "Music Disc",
-  "jukebox_song.alconautics.moonshiners": "Moonshiners — Instrumental",
   "alconautics.ponder.apparatus.header": "The distillation apparatus and condenser",
   "alconautics.ponder.apparatus.text_1": "Place a fluid tank above a Blaze Burner and fill it with mash.",
   "alconautics.ponder.apparatus.text_2": "A Distillation Head turns the tank into a distillation apparatus. It also pumps the vapour.",

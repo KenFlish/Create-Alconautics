@@ -125,20 +125,16 @@ for kind,var in drinks:
 ru.update({'block.alconautics.condenser_base':'Конденсаторъ','tooltip.alconautics.cooler':'Конденсаторъ',
     'tooltip.alconautics.cooler_running':'Статусъ конденсатора: Работаетъ','tooltip.alconautics.cooler_idle':'Статусъ конденсатора: Не работаетъ',
     'tooltip.alconautics.status_header':'Статусъ перегоннаго аппарата','tooltip.alconautics.kind_label':'Типъ: ',
-    'item.alconautics.moonshiners_disc':'Музыкальная пластинка','jukebox_song.alconautics.moonshiners':'Песня самогонщиковъ — мелодія'})
+    })
 en.update({'block.alconautics.condenser_base':'Condenser','tooltip.alconautics.cooler':'Condenser',
     'tooltip.alconautics.status_header':'Distillation apparatus status','tooltip.alconautics.kind_label':'Type: ',
-    'item.alconautics.moonshiners_disc':'Music Disc','jukebox_song.alconautics.moonshiners':'Moonshiners — Instrumental'})
+    })
 write('assets/alconautics/lang/rpr.json',ru)
 write('assets/alconautics/lang/ru_ru.json',{k:modern(v) for k,v in ru.items()})
 write('assets/alconautics/lang/en_us.json',en)
 for effect,source in [('growth','growth_icon.png'),('shrinking','shrinking_icon.png')]:
     folder=R/'assets/alconautics/textures/mob_effect';folder.mkdir(parents=True,exist_ok=True)
     shutil.copy2(R.parents[2]/'art/source'/source,folder/f'{effect}.png')
-write('assets/alconautics/models/item/moonshiners_disc.json',{'parent':'minecraft:item/generated','textures':{'layer0':'minecraft:item/music_disc_13'}})
-write('assets/alconautics/sounds.json',{'music_disc.moonshiners':{'sounds':[{'name':'alconautics:music/moonshiners','stream':True}]}})
-write('data/alconautics/jukebox_song/moonshiners.json',{'sound_event':'alconautics:music_disc.moonshiners','description':{'translate':'jukebox_song.alconautics.moonshiners'},'length_in_seconds':73.67,'comparator_output':7})
-write('data/alconautics/recipe/crafting/moonshiners_disc.json',{'type':'minecraft:crafting_shapeless','ingredients':[{'item':'minecraft:music_disc_13'},{'item':'create:copper_sheet'},{'item':'alconautics:sugar_moonshine'}],'result':{'id':'alconautics:moonshiners_disc','count':1}})
 ponder=json.loads((R.parents[2]/'tools/ponder_lang.json').read_text(encoding='utf-8'))
 for data in ponder.values():
     for key in ['header','rpr_header']:

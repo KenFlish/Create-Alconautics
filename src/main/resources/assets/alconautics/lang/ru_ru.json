@@ -77,8 +77,6 @@
   "drink_kind.alconautics.vegetable": "Овощной",
   "tooltip.alconautics.status_header": "Статус перегонного аппарата",
   "tooltip.alconautics.kind_label": "Тип: ",
-  "item.alconautics.moonshiners_disc": "Музыкальная пластинка",
-  "jukebox_song.alconautics.moonshiners": "Песня самогонщиков — мелодия",
   "alconautics.ponder.apparatus.header": "Перегонный аппарат и конденсатор",
   "alconautics.ponder.apparatus.text_1": "Поставьте бак над горелкой всполоха и наполните его брагой.",
   "alconautics.ponder.apparatus.text_2": "Перегонная головка превращает бак в перегонный аппарат. Она же перекачивает пар.",

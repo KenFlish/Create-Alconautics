@@ -14,4 +14,4 @@ The two Ponder structures were supplied by the user (`ponder1_1.nbt` and `ponder
 
 The growth/shrinking effect icons were supplied by the user as `+.png` and `-.png` and are retained unchanged as `art/source/growth_icon.png` and `shrinking_icon.png`.
 
-The user supplied the recording titled "Песня Самогонщиков". `sounds/music/moonshiners.ogg` is an instrumental stem derived locally using the public UVR-MDX-NET-Inst_HQ_3 model. The model weights and original MP3 are not bundled. Source/output provenance is recorded in `art/source/music-processing.json`. The MIT code license does not grant rights to the recording; its original music/recording rights remain with their respective holders. The disc icon references Minecraft's installed `music_disc_13` texture.
+No film music, instrumental extraction, or music disc is included in this version. The previously bundled recording was removed pending permission from the rights holders.

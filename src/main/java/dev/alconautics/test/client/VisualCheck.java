@@ -35,22 +35,36 @@ public final class VisualCheck {
         }
         if(ponder && !started && mc.level!=null && mc.player!=null && mc.getOverlay()==null) {
             started=true;
-            mc.setScreen(net.createmod.ponder.foundation.ui.PonderUI.of(Content.COOLER_ITEM.get().getDefaultInstance()));
+            var ui=net.createmod.ponder.foundation.ui.PonderUI.of(Content.COOLER_ITEM.get().getDefaultInstance());
+            if(Boolean.getBoolean("alconautics.renderScene")) {
+                mc.getWindow().setWindowed(1920,1080);
+                mc.setScreen(new CleanRender(ui.getActiveScene()));
+            } else mc.setScreen(ui);
         }
         if(!ponder && !started && mc.screen instanceof TitleScreen && mc.getOverlay()==null) {
             started=true;
             mc.setScreen(new Preview());
         }
+        if(started && Boolean.getBoolean("alconautics.renderScene")) {
+            ticks++;
+            var ui=(CleanRender)mc.screen;
+            if(ticks==5) ui.seekToTime(1100);
+            if(ticks==60) Screenshot.grab(mc.gameDirectory,"alconautics-apparatus-dark.png",mc.getMainRenderTarget(),message -> System.out.println("ALCONAUTICS_RENDER: "+message.getString()));
+            if(ticks==80) ui.light=true;
+            if(ticks==110) Screenshot.grab(mc.gameDirectory,"alconautics-apparatus-light.png",mc.getMainRenderTarget(),message -> System.out.println("ALCONAUTICS_RENDER: "+message.getString()));
+            if(ticks==140) mc.stop();
+            return;
+        }
         if(started && Boolean.getBoolean("alconautics.ponderCheck")) {
             ticks++;
             if(ticks>380) {
-                if(ticks==400) Screenshot.grab(mc.gameDirectory,"alconautics-0.1.4-details.png",mc.getMainRenderTarget(),message -> System.out.println("ALCONAUTICS_VISUAL_CHECK: "+message.getString()));
+                if(ticks==400) Screenshot.grab(mc.gameDirectory,"alconautics-0.1.5-details.png",mc.getMainRenderTarget(),message -> System.out.println("ALCONAUTICS_VISUAL_CHECK: "+message.getString()));
                 if(ticks==420) { System.out.println("ALCONAUTICS_PONDER_CHECK: Both scenes and details completed");mc.stop(); }
                 return;
             }
             if(!(mc.screen instanceof net.createmod.ponder.foundation.ui.PonderUI ui)) throw new IllegalStateException("Ponder UI did not open");
             if(ticks%10==0 && ticks<180) ui.seekToTime(Math.min(ticks*8,1200));
-            if(ticks==185) Screenshot.grab(mc.gameDirectory,"alconautics-0.1.4-apparatus.png",mc.getMainRenderTarget(),message -> System.out.println("ALCONAUTICS_PONDER_CHECK: "+message.getString()));
+            if(ticks==185) Screenshot.grab(mc.gameDirectory,"alconautics-0.1.5-apparatus.png",mc.getMainRenderTarget(),message -> System.out.println("ALCONAUTICS_PONDER_CHECK: "+message.getString()));
             if(ticks==185) {
                 var scene=ui.getActiveScene();
                 var head=(HeadBE)scene.getWorld().getBlockEntity(new net.minecraft.core.BlockPos(2,4,3));
@@ -67,7 +81,7 @@ public final class VisualCheck {
             }
             if(ticks==200) mc.setScreen(net.createmod.ponder.foundation.ui.PonderUI.of(Content.DRY_ITEM.get().getDefaultInstance()));
             if(ticks>200 && ticks%10==0 && ticks<350) ((net.createmod.ponder.foundation.ui.PonderUI)mc.screen).seekToTime(Math.min((ticks-200)*8,950));
-            if(ticks==305) Screenshot.grab(mc.gameDirectory,"alconautics-0.1.4-dry-chamber.png",mc.getMainRenderTarget(),message -> System.out.println("ALCONAUTICS_PONDER_CHECK: "+message.getString()));
+            if(ticks==305) Screenshot.grab(mc.gameDirectory,"alconautics-0.1.5-dry-chamber.png",mc.getMainRenderTarget(),message -> System.out.println("ALCONAUTICS_PONDER_CHECK: "+message.getString()));
             if(ticks==355) {
                 var scene=ui.getActiveScene();
                 if(!(scene.getWorld().getBlockEntity(new net.minecraft.core.BlockPos(1,4,3)) instanceof DryBE d) || !d.items.getStackInSlot(0).is(net.minecraft.world.item.Items.GLOWSTONE_DUST)) throw new IllegalStateException("Ponder dry chamber demonstration failed");
@@ -82,11 +96,26 @@ public final class VisualCheck {
             if(ticks==100) mc.stop();
         }
     }
+    /** Native scene rendering, with no Ponder widgets, captions or game backdrop. */
+    private static final class CleanRender extends net.createmod.ponder.foundation.ui.PonderUI {
+        boolean light;
+        CleanRender(net.createmod.ponder.foundation.PonderScene scene) { super(List.of(scene)); }
+        @Override public void render(GuiGraphics g,int mouseX,int mouseY,float partial) {
+            g.fillGradient(0,0,width,height,light?0xffe9eff2:0xff273b4c,light?0xffc9d6df:0xff101b25);
+            g.pose().pushPose();
+            g.pose().translate(0,height*.055,0);
+            g.pose().translate(width/2.0,height/2.0,0);
+            g.pose().scale(1.13f,1.13f,1.13f);
+            g.pose().translate(-width/2.0,-height/2.0,0);
+            renderScene(g,0,0,0,partial);
+            g.pose().popPose();
+        }
+    }
     private static final class DetailsPreview extends Screen {
         DetailsPreview() { super(Component.literal("Alconautics details check")); }
         @Override public void render(GuiGraphics g,int mx,int my,float partial) {
             g.fill(0,0,width,height,0xff303238);
-            g.drawCenteredString(font,"Create: Alconautics 0.1.4",width/2,12,0xffffffff);
+            g.drawCenteredString(font,"Create: Alconautics 0.1.5",width/2,12,0xffffffff);
             g.renderComponentTooltip(font,machineTooltip,20,40);
             var drink=Content.DRINKS.get(new Drink(Drink.Kind.SUGAR,Drink.Variant.STRONG)).get();
             var lines=new java.util.ArrayList<Component>();lines.add(drink.getDefaultInstance().getHoverName());
@@ -96,7 +125,6 @@ public final class VisualCheck {
                 var id=net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("alconautics","textures/mob_effect/"+(i==0?"growth":"shrinking")+".png");
                 g.blit(id,width-70+i*25,180,0,0,16,16,16,16);
             }
-            g.renderItem(Content.DISC.get().getDefaultInstance(),width-70,230);
         }
     }
     private static final class Preview extends Screen {
