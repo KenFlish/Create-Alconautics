@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " C ",
+    "CPC",
+    " B "
+  ],
+  "key": {
+    "C": {
+      "item": "create:copper_sheet"
+    },
+    "P": {
+      "item": "create:mechanical_pump"
+    },
+    "B": {
+      "item": "create:brass_casing"
+    }
+  },
+  "result": {
+    "id": "alconautics:distillation_head",
+    "count": 1
+  }
+}

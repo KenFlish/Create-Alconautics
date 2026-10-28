@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " C ",
+    "IPI",
+    " B "
+  ],
+  "key": {
+    "C": {
+      "item": "create:fluid_pipe"
+    },
+    "I": {
+      "item": "create:iron_sheet"
+    },
+    "P": {
+      "item": "create:basin"
+    },
+    "B": {
+      "item": "create:copper_sheet"
+    }
+  },
+  "result": {
+    "id": "alconautics:condenser_base",
+    "count": 1
+  }
+}

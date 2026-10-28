@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "alconautics:block/dry_chamber"
+    },
+    "facing=south": {
+      "model": "alconautics:block/dry_chamber"
+    },
+    "facing=west": {
+      "model": "alconautics:block/dry_chamber"
+    },
+    "facing=north": {
+      "model": "alconautics:block/dry_chamber"
+    }
+  }
+}

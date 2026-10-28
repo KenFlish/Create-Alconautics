@@ -1,0 +1,25 @@
+{
+  "variants": {
+    "drink=0": {
+      "model": "alconautics:block/moonshine_bottle"
+    },
+    "drink=1": {
+      "model": "alconautics:block/moonshine_bottle"
+    },
+    "drink=2": {
+      "model": "alconautics:block/moonshine_bottle"
+    },
+    "drink=3": {
+      "model": "alconautics:block/moonshine_bottle"
+    },
+    "drink=4": {
+      "model": "alconautics:block/moonshine_bottle"
+    },
+    "drink=5": {
+      "model": "alconautics:block/moonshine_bottle"
+    },
+    "drink=6": {
+      "model": "alconautics:block/moonshine_bottle"
+    }
+  }
+}

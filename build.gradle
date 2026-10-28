@@ -1,0 +1,40 @@
+plugins {
+    id 'java-library'
+    id 'net.neoforged.moddev' version '2.0.148'
+}
+group = 'dev.alconautics'
+version = '0.1.4'
+base { archivesName = 'create-alconautics' }
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+repositories { mavenCentral() }
+neoForge {
+    version = '21.1.234'
+    runs {
+        client {
+            client()
+            if (project.hasProperty('visualCheck') || project.hasProperty('ponderCheck')) {
+                systemProperty 'alconautics.visualCheck', 'true'
+                systemProperty 'alconautics.ponderCheck', project.hasProperty('ponderCheck').toString()
+                gameDirectory = project.file('run-visual')
+            }
+        }
+        server { server(); programArgument '--nogui' }
+        gameTestServer { type = 'gameTestServer' }
+        configureEach { systemProperty 'neoforge.enabledGameTestNamespaces', 'alconautics' }
+    }
+    mods { alconautics { sourceSet sourceSets.main } }
+}
+dependencies {
+    implementation files('libs/create-1.21.1-6.0.9.jar')
+    compileOnly fileTree(dir: 'libs/compile', include: '*.jar')
+    compileOnly fileTree(dir: 'libs/runtime', include: '*.jar')
+    runtimeOnly fileTree(dir: 'libs/runtime', include: '*.jar')
+}
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+tasks.withType(ProcessResources).configureEach { filteringCharset = 'UTF-8' }
+tasks.named('jar') {
+    includeEmptyDirs = false
+    from('LICENSE')
+    from('ASSET-NOTICES.md')
+    exclude('dev/alconautics/test/**')
+}

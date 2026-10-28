@@ -1,0 +1,17 @@
+{
+  "type": "create:emptying",
+  "ingredients": [
+    {
+      "item": "alconautics:vegetable_moonshine"
+    }
+  ],
+  "results": [
+    {
+      "id": "minecraft:glass_bottle"
+    },
+    {
+      "id": "alconautics:vegetable_moonshine",
+      "amount": 250
+    }
+  ]
+}

@@ -1,0 +1,218 @@
+{
+  "textures": {
+    "0": "alconautics:block/dry_chamber_0",
+    "particle": "alconautics:block/dry_chamber_0"
+  },
+  "elements": [
+    {
+      "from": [
+        3,
+        0,
+        3
+      ],
+      "to": [
+        13,
+        14,
+        13
+      ],
+      "faces": {
+        "north": {
+          "texture": "#0",
+          "uv": [
+            0.0,
+            0.0,
+            5.0,
+            7.0
+          ]
+        },
+        "east": {
+          "texture": "#0",
+          "uv": [
+            0.0,
+            0.0,
+            5.0,
+            7.0
+          ]
+        },
+        "south": {
+          "texture": "#0",
+          "uv": [
+            0.0,
+            0.0,
+            5.0,
+            7.0
+          ]
+        },
+        "west": {
+          "texture": "#0",
+          "uv": [
+            0.0,
+            0.0,
+            5.0,
+            7.0
+          ]
+        },
+        "up": {
+          "texture": "#0",
+          "uv": [
+            5.0,
+            0.0,
+            10.0,
+            5.0
+          ]
+        },
+        "down": {
+          "texture": "#0",
+          "uv": [
+            5.0,
+            5.0,
+            10.0,
+            10.0
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        5,
+        13,
+        5
+      ],
+      "to": [
+        11,
+        16,
+        11
+      ],
+      "faces": {
+        "north": {
+          "texture": "#0",
+          "uv": [
+            10.0,
+            0.0,
+            13.0,
+            1.5
+          ]
+        },
+        "east": {
+          "texture": "#0",
+          "uv": [
+            10.0,
+            1.5,
+            13.0,
+            3.0
+          ]
+        },
+        "south": {
+          "texture": "#0",
+          "uv": [
+            3.0,
+            10.0,
+            6.0,
+            11.5
+          ]
+        },
+        "west": {
+          "texture": "#0",
+          "uv": [
+            10.0,
+            3.0,
+            13.0,
+            4.5
+          ]
+        },
+        "up": {
+          "texture": "#0",
+          "uv": [
+            0.0,
+            7.0,
+            3.0,
+            10.0
+          ]
+        },
+        "down": {
+          "texture": "#0",
+          "uv": [
+            13.0,
+            3.0,
+            16.0,
+            6.0
+          ]
+        }
+      }
+    }
+  ],
+  "ambientocclusion": false,
+  "display": {
+    "gui": {
+      "rotation": [
+        35,
+        135,
+        0
+      ],
+      "translation": [
+        0,
+        0.5,
+        0
+      ],
+      "scale": [
+        0.8,
+        0.8,
+        0.8
+      ]
+    },
+    "ground": {
+      "translation": [
+        0,
+        3,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "fixed": {
+      "scale": [
+        0.6,
+        0.6,
+        0.6
+      ]
+    },
+    "thirdperson_righthand": {
+      "rotation": [
+        75,
+        45,
+        0
+      ],
+      "translation": [
+        0,
+        2.5,
+        0
+      ],
+      "scale": [
+        0.375,
+        0.375,
+        0.375
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        45,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    }
+  },
+  "render_type": "minecraft:cutout"
+}

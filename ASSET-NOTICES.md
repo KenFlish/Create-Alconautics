@@ -1,0 +1,17 @@
+# Models and textures
+
+The four original Blockbench files in `art/source` were supplied by the user for this project. They are preserved unchanged.
+
+The dry chamber and bottle use native Minecraft JSON models with their original UV layout and display transforms. The head and condenser are deterministically converted to OBJ to preserve rotations that ordinary JSON cuboids cannot represent; UV orientation is explicitly corrected for the NeoForge OBJ loader. No source models or textures from Brewery are redistributed.
+
+Unmodified stock Create textures are referenced by resource identifier (`create:block/...`) and resolved from the separately installed mod. Their bytes are compared before reusing a stock reference: modified textures supplied in the user's models are preserved instead of silently replaced. The updated condenser uses the packed texture embedded in the supplied Blockbench file, without an Aeronautics dependency. The supplied `moonshine.png` is used unchanged as the hand/inventory sprite; the placed bottle retains the supplied 3D geometry and its separate texture.
+
+The Create boiler gauge models are rendered directly from installed Create, without copying its models. The code integrates with Create under its MIT terms; copyright notice: Copyright (c) The Create Team / The Creators of Create. See https://github.com/Creators-of-Create/Create/blob/mc1.21.1/dev/LICENSE.md for the original license and asset restrictions.
+
+Dependency JARs in `libs/` are only development inputs and are not embedded in the distributable JAR.
+
+The two Ponder structures were supplied by the user (`ponder1_1.nbt` and `ponder2.nbt`). Original files are retained in `art/source`; the packaged scene copies remove saved block-entity world coordinates and owner identifiers. Tutorial scripts add the preparation steps while preserving the supplied layouts.
+
+The growth/shrinking effect icons were supplied by the user as `+.png` and `-.png` and are retained unchanged as `art/source/growth_icon.png` and `shrinking_icon.png`.
+
+The user supplied the recording titled "Песня Самогонщиков". `sounds/music/moonshiners.ogg` is an instrumental stem derived locally using the public UVR-MDX-NET-Inst_HQ_3 model. The model weights and original MP3 are not bundled. Source/output provenance is recorded in `art/source/music-processing.json`. The MIT code license does not grant rights to the recording; its original music/recording rights remain with their respective holders. The disc icon references Minecraft's installed `music_disc_13` texture.

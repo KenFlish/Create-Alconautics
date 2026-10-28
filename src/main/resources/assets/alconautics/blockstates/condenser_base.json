@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "alconautics:block/condenser_base"
+    },
+    "facing=south": {
+      "model": "alconautics:block/condenser_base"
+    },
+    "facing=west": {
+      "model": "alconautics:block/condenser_base"
+    },
+    "facing=north": {
+      "model": "alconautics:block/condenser_base"
+    }
+  }
+}
