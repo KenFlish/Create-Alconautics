@@ -1,8 +1,8 @@
 # Models and textures
 
-The four original Blockbench files in `art/source` were supplied by the user for this project. They are preserved unchanged.
+The original Blockbench files in `art/source` were supplied by the user for this project. The single and paired bottle models are the updated user-supplied `samogon.bbmodel` and `2samodona.bbmodel`; their original files are preserved unchanged.
 
-The dry chamber and bottle use native Minecraft JSON models with their original UV layout and display transforms. The head and condenser are deterministically converted to OBJ to preserve rotations that ordinary JSON cuboids cannot represent; UV orientation is explicitly corrected for the NeoForge OBJ loader. No source models or textures from Brewery are redistributed.
+The dry chamber uses a native Minecraft JSON model with its original UV layout. The head, condenser and bottles are deterministically converted to OBJ to preserve rotations and glass faces that ordinary JSON cuboids cannot represent; UV orientation is explicitly corrected for the NeoForge OBJ loader. The paired bottle geometry is split into two independently animated parts. Bottle wobble and overlays use the separately installed Foundation library, as Brewery does. No source models or textures from Brewery are redistributed.
 
 Unmodified stock Create textures are referenced by resource identifier (`create:block/...`) and resolved from the separately installed mod. Their bytes are compared before reusing a stock reference: modified textures supplied in the user's models are preserved instead of silently replaced. The updated condenser uses the packed texture embedded in the supplied Blockbench file, without an Aeronautics dependency. The supplied `moonshine.png` is used unchanged as the hand/inventory sprite; the placed bottle retains the supplied 3D geometry and its separate texture.
 

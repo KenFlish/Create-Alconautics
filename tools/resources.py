@@ -1,12 +1,12 @@
 """Deterministic Blockbench geometry conversion and recipe/localization generation."""
 from pathlib import Path
-import json, math, base64, re, shutil, zipfile
+import json, math, base64, re, shutil, zipfile, itertools
 R=Path(__file__).resolve().parents[1]/'src/main/resources'
 def write(path,data):
     p=R/path;p.parent.mkdir(parents=True,exist_ok=True)
     p.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n' if not isinstance(data,str) else data,encoding='utf-8')
 
-names={'golovka':'distillation_head','holodilnik':'condenser_base','suxharnik':'dry_chamber','samogon':'moonshine_bottle'}
+names={'golovka':'distillation_head','holodilnik':'condenser_base','suxharnik':'dry_chamber','samogon':'moonshine_bottle_single','2samodona':'moonshine_bottle_pair'}
 references={'engine.png':'create:block/engine','basin.png':'create:block/basin','roller_metal.png':'create:block/roller_metal','framed_glass.png':'create:block/palettes/framed_glass','item_drain_top.png':'create:block/item_drain_top','fan_blades.png':'create:block/fan_blades','velocity_sensor_2.png':'minecraft:block/copper_block'}
 create_assets=zipfile.ZipFile(R.parents[2]/'libs/create-1.21.1-6.0.9.jar')
 display={'gui':{'rotation':[30,225,0],'translation':[0,0,0],'scale':[.65,.65,.65]},'ground':{'translation':[0,3,0],'scale':[.5,.5,.5]},'fixed':{'scale':[.6,.6,.6]},'thirdperson_righthand':{'rotation':[75,45,0],'translation':[0,2.5,0],'scale':[.375,.375,.375]},'firstperson_righthand':{'rotation':[0,45,0],'translation':[0,0,0],'scale':[.5,.5,.5]}}
@@ -34,7 +34,8 @@ for src,dst in names.items():
     textures['particle']=textures['0']
     obj=['# Converted from user-provided Blockbench geometry','mtllib '+dst+'.mtl']
     index=0
-    for element in m['elements']:
+    for element_number,element in enumerate(m['elements']):
+        if src=='2samodona':obj+=['g bottle_'+str(element_number//4)]
         x0,y0,z0=element['from'];x1,y1,z1=element['to']
         faces={'north':[(x1,y0,z0),(x0,y0,z0),(x0,y1,z0),(x1,y1,z0)],'south':[(x0,y0,z1),(x1,y0,z1),(x1,y1,z1),(x0,y1,z1)],'west':[(x0,y0,z0),(x0,y0,z1),(x0,y1,z1),(x0,y1,z0)],'east':[(x1,y0,z1),(x1,y0,z0),(x1,y1,z0),(x1,y1,z1)],'up':[(x0,y1,z1),(x1,y1,z1),(x1,y1,z0),(x0,y1,z0)],'down':[(x0,y0,z0),(x1,y0,z0),(x1,y0,z1),(x0,y0,z1)]}
         for face,props in element.get('faces',{}).items():
@@ -51,7 +52,15 @@ for src,dst in names.items():
     write(f'assets/alconautics/models/block/{dst}.obj','\n'.join(obj)+'\n')
     write(f'assets/alconautics/models/block/{dst}.mtl','\n'.join(mtl))
     model={'loader':'neoforge:obj','model':f'alconautics:models/block/{dst}.obj','automatic_culling':False,'flip_v':True,'textures':textures,'display':display|m.get('display',{}),'render_type':'minecraft:cutout'}
-    if src in ('suxharnik','samogon'):
+    if src=='2samodona':
+        for part in range(2):
+            selected=False;lines=[]
+            for line in obj:
+                if line.startswith('g '):selected=line==f'g bottle_{part}'
+                if not line.startswith('f ') or selected:lines.append(line)
+            write(f'assets/alconautics/models/block/{dst}_{part}.obj','\n'.join(lines)+'\n')
+            write(f'assets/alconautics/models/block/{dst}_{part}.json',model|{'model':f'alconautics:models/block/{dst}_{part}.obj'})
+    if src=='suxharnik':
         elements=[]
         for i,e in enumerate(m['elements']):
             faces={}
@@ -65,7 +74,7 @@ for src,dst in names.items():
             elements.append({'from':e['from'],'to':e['to'],'faces':faces})
         model={'textures':textures,'elements':elements,'ambientocclusion':False,'display':display|m.get('display',{}),'render_type':'minecraft:cutout'}
     write(f'assets/alconautics/models/block/{dst}.json',model)
-    if src!='samogon':
+    if src not in ('samogon','2samodona'):
         variants={f'facing={direction}':{'model':f'alconautics:block/{dst}',**({'y':angle} if src=='golovka' else {})} for direction,angle in [('east',0),('south',90),('west',180),('north',270)]}
         write(f'assets/alconautics/blockstates/{dst}.json',{'variants':variants})
         write(f'assets/alconautics/models/item/{dst}.json',{'parent':f'alconautics:block/{dst}'})
@@ -75,6 +84,39 @@ drinks=[(k,v) for k in ['sugar','fruit','vegetable'] for v in (['','_long','_str
 (R/'assets/alconautics/textures/item').mkdir(parents=True,exist_ok=True)
 shutil.copy2(R.parents[2]/'art/source/moonshine.png',R/'assets/alconautics/textures/item/moonshine.png')
 write('assets/alconautics/blockstates/moonshine_bottle.json',{'variants':{f'drink={i}':{'model':'alconautics:block/moonshine_bottle'} for i in range(7)}})
+write('assets/alconautics/models/block/moonshine_bottle.json',{'textures':{'particle':'alconautics:block/moonshine_bottle_single_0'},'elements':[]})
+# Collision bounds use transformed corners, including the pair's arbitrary Y rotations.
+variants=[]
+for src in ['samogon','2samodona']:
+    m=json.loads((R.parents[2]/'art/source'/f'{src}.bbmodel').read_text(encoding='utf-8'))
+    boxes=[]
+    for e in m['elements']:
+        if any(abs(a-b)<1e-6 for a,b in zip(e['from'],e['to'])):continue
+        points=[rotate(p,e.get('rotation',[0,0,0]),e.get('origin',[8,8,8])) for p in itertools.product(*zip(e['from'],e['to']))]
+        boxes.append([min(p[i]*16 for p in points) for i in range(3)]+[max(p[i]*16 for p in points) for i in range(3)])
+    for turns in range(4):
+        rotated=[]
+        for b in boxes:
+            points=[]
+            for x,y,z in itertools.product(*zip(b[:3],b[3:])):
+                for _ in range(turns):x,z=16-z,x
+                points.append((x,y,z))
+            coords=[min(p[i] for p in points) for i in range(3)]+[max(p[i] for p in points) for i in range(3)]
+            rotated.append('Block.box('+','.join(str(round(v,7)) for v in coords)+')')
+        variants.append('Shapes.or('+','.join(rotated)+').optimize()')
+(R.parents[2]/'src/main/java/dev/alconautics/BottleShapes.java').write_text('''package dev.alconautics;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.phys.shapes.*;
+/** Generated from the two supplied Blockbench models by tools/resources.py. */
+final class BottleShapes {
+    private static final VoxelShape[] SHAPES = {%s};
+    static VoxelShape get(int count,Direction facing) {
+        int turn=switch(facing) {case EAST -> 1;case SOUTH -> 2;case WEST -> 3;default -> 0;};
+        return SHAPES[(count-1)*4+turn];
+    }
+}
+'''%(',\n'.join(variants)),encoding='utf-8')
 for kind,var in drinks:
     name=kind+'_moonshine'+var
     write(f'assets/alconautics/models/item/{name}.json',{'parent':'minecraft:item/generated','textures':{'layer0':'alconautics:item/moonshine'}})
@@ -126,6 +168,13 @@ ru.update({'block.alconautics.condenser_base':'Конденсаторъ','toolti
     'tooltip.alconautics.cooler_running':'Статусъ конденсатора: Работаетъ','tooltip.alconautics.cooler_idle':'Статусъ конденсатора: Не работаетъ',
     'tooltip.alconautics.status_header':'Статусъ перегоннаго аппарата','tooltip.alconautics.kind_label':'Типъ: ',
     })
+ru['block.alconautics.moonshine_bottle']='Бутылочка самогона'
+ru['tooltip.alconautics.sea_pickle']='Снижаетъ опьянѣніе на одну ступень, но не ниже I уровня'
+en['block.alconautics.moonshine_bottle']='Moonshine Bottle'
+en['tooltip.alconautics.sea_pickle']='Lowers intoxication by one level, but never below level I'
+for kind,var in drinks:
+    ru['item.alconautics.'+kind+'_moonshine'+var]='Бутылочка самогона'
+    en['item.alconautics.'+kind+'_moonshine'+var]='Moonshine Bottle'
 en.update({'block.alconautics.condenser_base':'Condenser','tooltip.alconautics.cooler':'Condenser',
     'tooltip.alconautics.status_header':'Distillation apparatus status','tooltip.alconautics.kind_label':'Type: ',
     })

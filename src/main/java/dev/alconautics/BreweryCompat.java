@@ -33,6 +33,16 @@ public final class BreweryCompat {
             }
         });
     }
+    /** Preserve the natural timer and never lower intoxication below level I. */
+    public static void soberOneLevel(LivingEntity entity) {
+        drunkEffect().ifPresent(effect -> {
+            var old=entity.getEffect(effect);
+            if(old==null || old.getAmplifier()==0) return;
+            int duration=old.getDuration(),amplifier=old.getAmplifier()-1;
+            entity.removeEffect(effect);
+            entity.addEffect(new MobEffectInstance(effect,duration,amplifier,old.isAmbient(),old.isVisible(),old.showIcon()));
+        });
+    }
     public static boolean applyBreweryEffect(LivingEntity entity,MobEffectInstance instance) {
         if(!instance.is(MobEffects.CONFUSION)) return entity.addEffect(instance);
         long now=entity.level().getGameTime();

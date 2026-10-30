@@ -29,6 +29,7 @@ public final class Content {
     public static final DeferredItem<BlockItem> HEAD_ITEM = ITEMS.registerSimpleBlockItem(HEAD);
     public static final DeferredItem<BlockItem> COOLER_ITEM = ITEMS.registerSimpleBlockItem(COOLER);
     public static final DeferredItem<BlockItem> DRY_ITEM = ITEMS.registerSimpleBlockItem(DRY);
+    public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<BottleBE>> BOTTLE_BE = BES.register("moonshine_bottle",() -> BlockEntityType.Builder.of(BottleBE::new,BOTTLE.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HeadBE>> HEAD_BE = BES.register("distillation_head", () -> BlockEntityType.Builder.of(HeadBE::new, HEAD.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CoolerBE>> COOLER_BE = BES.register("condenser_base", () -> BlockEntityType.Builder.of(CoolerBE::new, COOLER.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DryBE>> DRY_BE = BES.register("dry_chamber", () -> BlockEntityType.Builder.of(DryBE::new, DRY.get()).build(null));

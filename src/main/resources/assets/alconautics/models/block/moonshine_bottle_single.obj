@@ -1,5 +1,5 @@
 # Converted from user-provided Blockbench geometry
-mtllib moonshine_bottle.mtl
+mtllib moonshine_bottle_single.mtl
 usemtl tex0
 v 0.6875000 0.0000000 0.3125000
 v 0.3125000 0.0000000 0.3125000

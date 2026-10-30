@@ -37,12 +37,18 @@ public final class MoonshineItem extends Item {
     }
     @Override public InteractionResult useOn(UseOnContext ctx) {
         var p=ctx.getPlayer();
+        if(p!=null && ctx.getLevel().getBlockState(ctx.getClickedPos()).is(Content.BOTTLE.get())) {
+            var level=ctx.getLevel();var pos=ctx.getClickedPos();
+            if(!BottleBlock.mayUse(level,pos,p,ctx.getClickedFace(),ctx.getItemInHand())) return InteractionResult.FAIL;
+            if(!level.isClientSide && level.getBlockEntity(pos) instanceof BottleBE bottles && bottles.addBottle(ctx.getItemInHand()) && !p.isCreative()) ctx.getItemInHand().shrink(1);
+            return InteractionResult.sidedSuccess(level.isClientSide);
+        }
         if(p==null || !p.isShiftKeyDown() || ctx.getClickedFace()!=Direction.UP) return InteractionResult.PASS;
         var pos=ctx.getClickedPos().above(); var level=ctx.getLevel();
         if(!level.mayInteract(p,pos) || !p.mayUseItemAt(pos,Direction.UP,ctx.getItemInHand()) || !level.getBlockState(pos).canBeReplaced()) return InteractionResult.FAIL;
-        BlockState state=Content.BOTTLE.get().defaultBlockState().setValue(BottleBlock.DRINK,Drink.ALL.indexOf(drink));
+        BlockState state=Content.BOTTLE.get().defaultBlockState().setValue(BottleBlock.DRINK,Drink.ALL.indexOf(drink)).setValue(BottleBlock.FACING,p.getDirection().getOpposite());
         if(!state.canSurvive(level,pos)) return InteractionResult.FAIL;
-        if(!level.isClientSide) { level.setBlockAndUpdate(pos,state); if(!p.isCreative()) ctx.getItemInHand().shrink(1); }
+        if(!level.isClientSide) { level.setBlockAndUpdate(pos,state); if(level.getBlockEntity(pos) instanceof BottleBE bottles) bottles.placeFirst(ctx.getItemInHand()); if(!p.isCreative()) ctx.getItemInHand().shrink(1); }
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
     @Override public void appendHoverText(ItemStack stack,TooltipContext ctx,List<Component> out,TooltipFlag flag) {

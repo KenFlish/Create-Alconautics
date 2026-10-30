@@ -51,7 +51,11 @@ for project in ('lets-do-brewery-farmcharm-compat', 'lets-do-farm-charm', 'archi
     except Exception as e:
         raise RuntimeError('Could not prepare '+project) from e
 (ROOT/'dependency-lock.json').write_text(json.dumps(lock, indent=2), encoding='utf-8')
-for name in ('golovka','holodilnik','suxharnik','samogon'):
+with zipfile.ZipFile(ROOT/'libs/runtime/letsdo-farm_and_charm-neoforge-1.1.29.jar') as z:
+    name=next(n for n in z.namelist() if n.endswith('foundation-neoforge-1.0.7.jar'))
+    target=ROOT/'libs/compile/foundation-neoforge-1.0.7.jar'
+    target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(z.read(name))
+for name in ('golovka','holodilnik','suxharnik','samogon','2samodona'):
     target = ROOT/'art/source'/f'{name}.bbmodel'
     target.parent.mkdir(parents=True, exist_ok=True)
     if not target.exists():

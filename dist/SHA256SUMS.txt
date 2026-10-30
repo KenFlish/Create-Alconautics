@@ -1,2 +1,2 @@
-41b0b16c77a8753466254ed4fe0670e71fc04af84e86e05f10d6e32a62146844  create-alconautics-0.1.5.jar
-dc3bc0430d9c823799a9e5cbcb03b45525afd4464fac17b177f583ecdf849f01  create-alconautics-0.1.5-sources.zip
+f32c9640f743e09ae3f49d57099744805320ab405b9de041e1d3c11528a781dc  create-alconautics-0.1.6.jar
+03caf4e06f1f01cd4cf234795d1eebc0b963a676f655946a049e79c8f55ab7e1  create-alconautics-0.1.6-sources.zip

@@ -12,9 +12,16 @@ import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 public final class ClientSetup {
     @SubscribeEvent public static void renderers(net.neoforged.neoforge.client.event.EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(Content.DRY_BE.get(),DryRenderer::new);
+        event.registerBlockEntityRenderer(Content.BOTTLE_BE.get(),BottleRenderer::new);
+    }
+    @SubscribeEvent public static void models(net.neoforged.neoforge.client.event.ModelEvent.RegisterAdditional event) {
+        event.register(BottleRenderer.SINGLE);event.register(BottleRenderer.FIRST);event.register(BottleRenderer.SECOND);
     }
     @SubscribeEvent public static void setup(net.neoforged.fml.event.lifecycle.FMLClientSetupEvent event) {
-        event.enqueueWork(() -> net.createmod.ponder.foundation.PonderIndex.addPlugin(new AlconauticsPonder()));
+        event.enqueueWork(() -> {
+            net.createmod.ponder.foundation.PonderIndex.addPlugin(new AlconauticsPonder());
+            net.satisfy.foundation.overlay.BlockInfoOverlay.registerProvider(new BottleInfo());
+        });
     }
     @SubscribeEvent public static void fluids(RegisterClientExtensionsEvent event) {
         for(var f:Content.ALL_FLUIDS) {
