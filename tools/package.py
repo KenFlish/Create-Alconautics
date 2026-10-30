@@ -25,6 +25,8 @@ with zipfile.ZipFile(jar) as z:
     for effect in ('courage','shrinking'):
         assert z.read('assets/alconautics/textures/mob_effect/'+effect+'.png') == (root/'art/source'/f'{effect}_icon.png').read_bytes(), 'Effect icon differs from supplied artwork'
     assert 'assets/minecraft/atlases/mob_effects.json' not in z.namelist(), 'Old Courage icon override must not return'
+    assert 'assets/alconautics/jei/distillery.nbt' in z.namelist(), 'User JEI assembly missing'
+    assert not any('CondensingCategory' in n for n in z.namelist()), 'Separate condenser recipe must not return'
     assert len(json.loads(z.read('data/c/tags/fluid/ethanol.json'))['values']) == 20, 'All finished moonshine fluids must be fuel'
     assert json.loads(z.read('data/alconautics/tags/item/grains.json'))['values'] == ['minecraft:wheat','farm_and_charm:oat','farm_and_charm:barley'], 'Grain ingredients missing'
 (output/'SHA256SUMS.txt').write_text('\n'.join(hashlib.sha256(p.read_bytes()).hexdigest()+'  '+p.name for p in (output/jar.name,archive))+'\n',encoding='utf-8')

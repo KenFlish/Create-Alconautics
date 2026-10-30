@@ -39,7 +39,7 @@ Use moonshine as fuel for the Chemical Sprayer.
 
 ### Just Enough Items
 
-Browse distillation and condensation in JEI, with machinery previews, fluid inputs and outputs, herbs, heating, and cooling requirements.
+Browse distillation and cooling together in JEI: mash goes in, moonshine comes out, with a preview of the complete apparatus.
 
 All integrations are optional - none of these mods is required to play Alconautics.
 

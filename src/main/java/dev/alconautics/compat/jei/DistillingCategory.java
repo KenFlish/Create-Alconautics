@@ -10,6 +10,8 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import java.util.List;
 
 public final class DistillingCategory implements IRecipeCategory<AlconauticsJei.Distilling> {
     private final IDrawable icon;private final IDrawableAnimated arrow;
@@ -19,16 +21,17 @@ public final class DistillingCategory implements IRecipeCategory<AlconauticsJei.
     public IDrawable getIcon() { return icon; }
     public int getWidth() { return 180; }public int getHeight() { return 120; }
     @Override public net.minecraft.resources.ResourceLocation getRegistryName(AlconauticsJei.Distilling recipe) {
-        return net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(Alconautics.ID,"distilling/"+recipe.drink().id()+(recipe.superheat()?"/superheated":"/heated"));
+        return net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(Alconautics.ID,"distilling/"+recipe.drink().id());
     }
     public void setRecipe(IRecipeLayoutBuilder builder,AlconauticsJei.Distilling recipe,IFocusGroup focus) {
         var drink=recipe.drink();
         builder.addInputSlot(8,40).addFluidStack(Content.MASH.get(drink.kind()).source.get(),1000).setFluidRenderer(1000,false,16,16).setStandardSlotBackground();
-        builder.addOutputSlot(156,40).addFluidStack(Content.VAPOUR.get(drink).source.get(),1000).setFluidRenderer(1000,false,16,16).setStandardSlotBackground();
+        builder.addOutputSlot(156,40).addFluidStack(Content.SPIRITS.get(drink).source.get(),1000).setFluidRenderer(1000,false,16,16).setStandardSlotBackground();
         if(drink.variant()!=Drink.Variant.NORMAL)
             builder.addInputSlot(8,87).addItemStack(new ItemStack(drink.variant()==Drink.Variant.LONG?Herbs.ribwort():Herbs.nettle())).setStandardSlotBackground();
+        builder.addInputSlot(156,87).addItemStacks(List.of(new ItemStack(Items.SNOWBALL,4),new ItemStack(Items.SNOW_BLOCK),new ItemStack(Items.ICE),new ItemStack(Items.PACKED_ICE),new ItemStack(Items.BLUE_ICE))).setStandardSlotBackground();
     }
     public void draw(AlconauticsJei.Distilling recipe,IRecipeSlotsView slots,GuiGraphics g,double mouseX,double mouseY) {
-        arrow.draw(g,124,40);ApparatusDisplay.still(g,recipe.superheat());
+        arrow.draw(g,124,40);ApparatusDisplay.render(g,(System.currentTimeMillis()/3000)%2==1);
     }
 }

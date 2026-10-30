@@ -14,24 +14,21 @@ public final class AlconauticsJei implements IModPlugin {
     public static mezz.jei.api.runtime.IJeiRuntime runtime;
     @Override public void onRuntimeAvailable(mezz.jei.api.runtime.IJeiRuntime value) { runtime=value; }
     @Override public void onRuntimeUnavailable() { runtime=null; }
-    public record Distilling(Drink drink,boolean superheat) {}
-    public record Condensing(Drink drink) {}
+    public record Distilling(Drink drink) {}
     public static final RecipeType<Distilling> DISTILLING=RecipeType.create(Alconautics.ID,"distilling",Distilling.class);
-    public static final RecipeType<Condensing> CONDENSING=RecipeType.create(Alconautics.ID,"condensing",Condensing.class);
     @Override public ResourceLocation getPluginUid() { return ResourceLocation.fromNamespaceAndPath(Alconautics.ID,"jei"); }
     @Override public void registerCategories(IRecipeCategoryRegistration registration) {
         var gui=registration.getJeiHelpers().getGuiHelper();
-        registration.addRecipeCategories(new DistillingCategory(gui),new CondensingCategory(gui));
+        registration.addRecipeCategories(new DistillingCategory(gui));
     }
     @Override public void registerRecipes(IRecipeRegistration registration) {
-        var distilling=new ArrayList<Distilling>();var condensing=new ArrayList<Condensing>();
+        var distilling=new ArrayList<Distilling>();
         for(var drink:Drink.ALL) {
-            distilling.add(new Distilling(drink,false));distilling.add(new Distilling(drink,true));condensing.add(new Condensing(drink));
+            distilling.add(new Distilling(drink));
         }
-        registration.addRecipes(DISTILLING,distilling);registration.addRecipes(CONDENSING,condensing);
+        registration.addRecipes(DISTILLING,distilling);
     }
     @Override public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        registration.addRecipeCatalysts(DISTILLING,Content.HEAD_ITEM.get(),AllBlocks.FLUID_TANK.get(),AllBlocks.BLAZE_BURNER.get());
-        registration.addRecipeCatalysts(CONDENSING,Content.COOLER_ITEM.get(),AllBlocks.FLUID_PIPE.get());
+        registration.addRecipeCatalysts(DISTILLING,Content.HEAD_ITEM.get(),AllBlocks.FLUID_TANK.get(),AllBlocks.BLAZE_BURNER.get(),Content.COOLER_ITEM.get());
     }
 }

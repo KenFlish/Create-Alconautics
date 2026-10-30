@@ -3,7 +3,7 @@ from pathlib import Path
 import gzip, struct, io
 root=Path(__file__).resolve().parents[1]
 
-def prepare(source,target):
+def prepare(source,target,keep_copycat=False):
     s=io.BytesIO(gzip.decompress(source.read_bytes()))
     def num(fmt):return struct.unpack('>'+fmt,s.read(struct.calcsize('>'+fmt)))[0]
     def string():return s.read(num('H')).decode('utf-8')
@@ -33,10 +33,12 @@ def prepare(source,target):
     for b in d['blocks'][1][1]:
         if 'nbt' in b:
             old=b['nbt'][1]
-            b['nbt']=(10,{'id':old['id']})
+            keys=('id','Material','Item','EnableCT') if keep_copycat and old['id'][1]=='create:copycat' else ('id',)
+            b['nbt']=(10,{k:old[k] for k in keys if k in old})
     target.parent.mkdir(parents=True,exist_ok=True)
     target.write_bytes(gzip.compress(bytes([t])+text(name)+write(t,d),mtime=0))
 
 for source,target in [('ponder1_1','apparatus'),('ponder2','mash_and_dry_chamber')]:
     prepare(root/'art/source'/f'{source}.nbt',root/'src/main/resources/assets/alconautics/ponder'/f'{target}.nbt')
 print('Prepared two Ponder structures, retaining the supplied block layouts.')
+prepare(root/'art/source/jei_distillery.nbt',root/'src/main/resources/assets/alconautics/jei/distillery.nbt',keep_copycat=True)

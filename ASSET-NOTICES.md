@@ -14,6 +14,8 @@ The optional Sable integration uses its collision callback API. Sable and its co
 
 The two Ponder structures were supplied by the user (`ponder1_1.nbt` and `ponder2.nbt`). Original files are retained in `art/source`; the packaged scene copies remove saved block-entity world coordinates and owner identifiers. Tutorial scripts add the preparation steps while preserving the supplied layouts.
 
+The combined JEI machinery preview uses the user-supplied `my_schematic.nbt`, retained as `art/source/jei_distillery.nbt`. Its packaged copy removes saved machine data and owner identifiers, retaining the layout and copycat materials.
+
 The effect icons were supplied by the user. The growth icon is retained as `art/source/growth_icon.png`. Version 0.1.8 uses the updated shrinking icon from `-.png` and the High Spirits icon from `кураж.png`, retained unchanged as `art/source/shrinking_icon.png` and `courage_icon.png`.
 
 No film music, instrumental extraction, or music disc is included in this version. The previously bundled recording was removed pending permission from the rights holders.

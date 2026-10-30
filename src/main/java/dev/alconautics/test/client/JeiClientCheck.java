@@ -26,19 +26,18 @@ final class JeiClientCheck {
         if(ticks==1) {
             mc.getWindow().setWindowed(1920,1080);mc.setScreen(null);
             var manager=runtime.getRecipeManager();
-            require(manager.createRecipeLookup(AlconauticsJei.DISTILLING).includeHidden().get().count()==20,"Expected 20 heating/variant recipes");
-            require(manager.createRecipeLookup(AlconauticsJei.CONDENSING).includeHidden().get().count()==10,"Expected 10 condenser recipes");
+            require(manager.createRecipeCategoryLookup().get().filter(category -> category.getRecipeType().getUid().getNamespace().equals(Alconautics.ID)).count()==1,"Only the combined distillation and cooling category should remain");
+            require(manager.createRecipeLookup(AlconauticsJei.DISTILLING).includeHidden().get().count()==10,"Expected one combined recipe per drink variant");
             require(mc.getMobEffectTextures().get(Content.COURAGE).contents().name().toString().equals("alconautics:courage"),"Courage icon missing");
             runtime.getRecipesGui().showTypes(List.of(AlconauticsJei.DISTILLING));
         }
         if(ticks==40) {
             screenshot("distilling");
-            runtime.getRecipesGui().showRecipes(runtime.getRecipeManager().getRecipeCategory(AlconauticsJei.DISTILLING),List.of(new AlconauticsJei.Distilling(new Drink(Drink.Kind.GRAIN,Drink.Variant.STRONG),true)),List.of());
+            runtime.getRecipesGui().showRecipes(runtime.getRecipeManager().getRecipeCategory(AlconauticsJei.DISTILLING),List.of(new AlconauticsJei.Distilling(new Drink(Drink.Kind.GRAIN,Drink.Variant.STRONG))),List.of());
         }
-        if(ticks==80) { screenshot("herbs");runtime.getRecipesGui().showTypes(List.of(AlconauticsJei.CONDENSING)); }
-        if(ticks==120) { screenshot("condensing");mc.setScreen(new Icons()); }
-        if(ticks==160) screenshot("icons");
-        if(ticks==180) { System.out.println("ALCONAUTICS_COMPAT_CHECK: JEI 20+10 recipes, native category screens and supplied effect icons passed");mc.stop(); }
+        if(ticks==80) { screenshot("herbs");mc.setScreen(new Icons()); }
+        if(ticks==120) screenshot("icons");
+        if(ticks==140) { System.out.println("ALCONAUTICS_COMPAT_CHECK: JEI 10 combined mash-to-moonshine recipes, native category screens and supplied effect icons passed");mc.stop(); }
     }
     private static void require(boolean condition,String message) { if(!condition) throw new IllegalStateException(message); }
     private static void screenshot(String suffix) {

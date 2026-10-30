@@ -172,11 +172,11 @@ ru.update({'effect.alconautics.courage':'Куражъ','drink_kind.alconautics.g
     'modifier.alconautics.long':'Подорожникъ — дольше','modifier.alconautics.strong':'Крапива — сильнѣе'})
 en.update({'effect.alconautics.courage':'High Spirits','drink_kind.alconautics.grain':'Grain','kind.alconautics.grain':'Grain',
     'modifier.alconautics.long':'Ribwort — longer','modifier.alconautics.strong':'Nettle — stronger'})
-ru.update({'jei.alconautics.distilling':'Перегонка','jei.alconautics.condensing':'Конденсація',
+ru.update({'jei.alconautics.distilling':'Перегонка и охлажденіе','jei.alconautics.condensing':'Конденсація',
     'jei.alconautics.heat':'Обычный нагрѣвъ','jei.alconautics.superheat':'Супернагрѣвъ','jei.alconautics.rate':'100 мБ за %s с',
     'jei.alconautics.whistle':'Установите паровой свистокъ','jei.alconautics.wet_pipes':'Залейте водой двѣ трубы',
     'jei.alconautics.cooling':'Охлажденіе снѣгомъ или льдомъ','jei.alconautics.coolant_credit':'Неизрасходованный запасъ холода сохраняется.'})
-en.update({'jei.alconautics.distilling':'Distillation','jei.alconautics.condensing':'Condensation',
+en.update({'jei.alconautics.distilling':'Distillation and Cooling','jei.alconautics.condensing':'Condensation',
     'jei.alconautics.heat':'Heated','jei.alconautics.superheat':'Superheated','jei.alconautics.rate':'100 mB every %s s',
     'jei.alconautics.whistle':'Attach a Steam Whistle','jei.alconautics.wet_pipes':'Two waterlogged pipes',
     'jei.alconautics.cooling':'Cool with snow or ice','jei.alconautics.coolant_credit':'Unused cooling capacity is retained.'})
