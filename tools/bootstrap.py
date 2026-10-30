@@ -74,3 +74,14 @@ with zipfile.ZipFile(sable) as z:
     for name in z.namelist():
         if name.startswith('META-INF/jarjar/') and name.endswith('.jar'):
             (ROOT/'libs/compile'/Path(name).name).write_bytes(z.read(name))
+
+# Optional APIs are development inputs; enable -PcompatCheck for runtime tests.
+for project,filename in [('create-diesel-generators','createdieselgenerators-1.21.1-1.3.15.jar'),('jei','jei-1.21.1-neoforge-19.69.0.457.jar')]:
+    target=ROOT/'libs/compile'/filename
+    if target.exists(): continue
+    request=urllib.request.Request('https://api.modrinth.com/v2/project/'+project+'/version',headers={'User-Agent':'Alconautics-Development/0.1'})
+    versions=json.loads(urllib.request.urlopen(request,timeout=60).read())
+    file=next(f for version in versions for f in version['files'] if f['filename']==filename)
+    fetch(file['url'],'libs/compile/'+filename)
+    if hashlib.sha512(target.read_bytes()).hexdigest()!=file['hashes']['sha512']:
+        raise RuntimeError('Dependency hash mismatch: '+filename)

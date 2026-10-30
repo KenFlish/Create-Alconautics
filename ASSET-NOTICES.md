@@ -10,10 +10,10 @@ The Create boiler gauge models are rendered directly from installed Create, with
 
 Dependency JARs in `libs/` are only development inputs and are not embedded in the distributable JAR.
 
-The optional Sable integration uses its collision callback API. Sable and its companion/Veil/physics libraries are compile-time inputs and are not redistributed in this mod. The High Spirits effect references the installed vanilla Strength icon through an atlas alias; no Minecraft texture bytes are copied.
+The optional Sable integration uses its collision callback API. Sable and its companion/Veil/physics libraries are compile-time inputs and are not redistributed in this mod. JEI and Create: Diesel Generators are also compile-time inputs, not redistributed libraries. The JEI machinery display references installed Create models and its animation/lighting helpers.
 
 The two Ponder structures were supplied by the user (`ponder1_1.nbt` and `ponder2.nbt`). Original files are retained in `art/source`; the packaged scene copies remove saved block-entity world coordinates and owner identifiers. Tutorial scripts add the preparation steps while preserving the supplied layouts.
 
-The growth/shrinking effect icons were supplied by the user as `+.png` and `-.png` and are retained unchanged as `art/source/growth_icon.png` and `shrinking_icon.png`.
+The effect icons were supplied by the user. The growth icon is retained as `art/source/growth_icon.png`. Version 0.1.8 uses the updated shrinking icon from `-.png` and the High Spirits icon from `кураж.png`, retained unchanged as `art/source/shrinking_icon.png` and `courage_icon.png`.
 
 No film music, instrumental extraction, or music disc is included in this version. The previously bundled recording was removed pending permission from the rights holders.

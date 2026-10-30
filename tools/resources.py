@@ -122,10 +122,10 @@ for kind,var in drinks:
     write(f'assets/alconautics/models/item/{name}.json',{'parent':'minecraft:item/generated','textures':{'layer0':'alconautics:item/moonshine'}})
     write(f'data/alconautics/recipe/filling/{name}.json',{'type':'create:filling','ingredients':[{'item':'minecraft:glass_bottle'},{'type':'neoforge:single','fluid':'alconautics:'+name,'amount':250}],'results':[{'id':'alconautics:'+name}]})
     write(f'data/alconautics/recipe/emptying/{name}.json',{'type':'create:emptying','ingredients':[{'item':'alconautics:'+name}],'results':[{'id':'minecraft:glass_bottle'},{'id':'alconautics:'+name,'amount':250}]})
-for kind,ingredient in [('sugar','minecraft:sugar'),('fruit','#alconautics:fruits'),('vegetable','#alconautics:vegetables'),('grain','minecraft:wheat')]:
+for kind,ingredient in [('sugar','minecraft:sugar'),('fruit','#alconautics:fruits'),('vegetable','#alconautics:vegetables'),('grain','#alconautics:grains')]:
     ing={'tag':ingredient[1:]} if ingredient.startswith('#') else {'item':ingredient}
     write(f'data/alconautics/recipe/mixing/{kind}_mash.json',{'type':'create:mixing','ingredients':[{'type':'neoforge:single','fluid':'minecraft:water','amount':1000},{'item':'farm_and_charm:yeast'}]+[ing]*4,'results':[{'id':f'alconautics:{kind}_mash','amount':1000}]})
-for tag,items in [('fruits',['minecraft:apple']),('vegetables',['minecraft:potato','minecraft:carrot','minecraft:beetroot'])]:
+for tag,items in [('fruits',['minecraft:apple']),('vegetables',['minecraft:potato','minecraft:carrot','minecraft:beetroot']),('grains',['minecraft:wheat','farm_and_charm:oat','farm_and_charm:barley'])]:
     write(f'data/alconautics/tags/item/{tag}.json',{'replace':False,'values':items})
 for name,pattern,key in [('distillation_head',['P','C'],{'P':'create:fluid_pipe','C':'minecraft:compass'}),('condenser_base',[' C ','IPI',' B '],{'C':'create:fluid_pipe','I':'create:iron_sheet','P':'create:basin','B':'create:copper_sheet'}),('dry_chamber',[' P ','CBC'],{'P':'create:fluid_pipe','C':'create:copper_sheet','B':'minecraft:glass_bottle'})]:
     write(f'data/alconautics/recipe/crafting/{name}.json',{'type':'minecraft:crafting_shaped','pattern':pattern,'key':{k:{'item':v} for k,v in key.items()},'result':{'id':'alconautics:'+name,'count':1}})
@@ -172,6 +172,14 @@ ru.update({'effect.alconautics.courage':'Куражъ','drink_kind.alconautics.g
     'modifier.alconautics.long':'Подорожникъ — дольше','modifier.alconautics.strong':'Крапива — сильнѣе'})
 en.update({'effect.alconautics.courage':'High Spirits','drink_kind.alconautics.grain':'Grain','kind.alconautics.grain':'Grain',
     'modifier.alconautics.long':'Ribwort — longer','modifier.alconautics.strong':'Nettle — stronger'})
+ru.update({'jei.alconautics.distilling':'Перегонка','jei.alconautics.condensing':'Конденсація',
+    'jei.alconautics.heat':'Обычный нагрѣвъ','jei.alconautics.superheat':'Супернагрѣвъ','jei.alconautics.rate':'100 мБ за %s с',
+    'jei.alconautics.whistle':'Установите паровой свистокъ','jei.alconautics.wet_pipes':'Залейте водой двѣ трубы',
+    'jei.alconautics.cooling':'Охлажденіе снѣгомъ или льдомъ','jei.alconautics.coolant_credit':'Неизрасходованный запасъ холода сохраняется.'})
+en.update({'jei.alconautics.distilling':'Distillation','jei.alconautics.condensing':'Condensation',
+    'jei.alconautics.heat':'Heated','jei.alconautics.superheat':'Superheated','jei.alconautics.rate':'100 mB every %s s',
+    'jei.alconautics.whistle':'Attach a Steam Whistle','jei.alconautics.wet_pipes':'Two waterlogged pipes',
+    'jei.alconautics.cooling':'Cool with snow or ice','jei.alconautics.coolant_credit':'Unused cooling capacity is retained.'})
 ru['block.alconautics.moonshine_bottle']='Бутылочка самогона'
 ru['tooltip.alconautics.sea_pickle']='Снижаетъ опьянѣніе на одну ступень, но не ниже I уровня'
 en['block.alconautics.moonshine_bottle']='Moonshine Bottle'
@@ -185,8 +193,8 @@ en.update({'block.alconautics.condenser_base':'Condenser','tooltip.alconautics.c
 write('assets/alconautics/lang/rpr.json',ru)
 write('assets/alconautics/lang/ru_ru.json',{k:modern(v) for k,v in ru.items()})
 write('assets/alconautics/lang/en_us.json',en)
-write('assets/minecraft/atlases/mob_effects.json',{'sources':[{'type':'minecraft:single','resource':'minecraft:mob_effect/strength','sprite':'alconautics:courage'}]})
-for effect,source in [('growth','growth_icon.png'),('shrinking','shrinking_icon.png')]:
+write('data/c/tags/fluid/ethanol.json',{'replace':False,'values':['alconautics:'+prefix+kind+'_moonshine'+var for kind,var in drinks for prefix in ['', 'flowing_']]})
+for effect,source in [('growth','growth_icon.png'),('shrinking','shrinking_icon.png'),('courage','courage_icon.png')]:
     folder=R/'assets/alconautics/textures/mob_effect';folder.mkdir(parents=True,exist_ok=True)
     shutil.copy2(R.parents[2]/'art/source'/source,folder/f'{effect}.png')
 ponder=json.loads((R.parents[2]/'tools/ponder_lang.json').read_text(encoding='utf-8'))

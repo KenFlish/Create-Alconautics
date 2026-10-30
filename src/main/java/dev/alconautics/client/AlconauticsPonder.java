@@ -98,7 +98,7 @@ public final class AlconauticsPonder implements PonderPlugin {
         fill(s,u,1,2,1,Drink.Kind.VEGETABLE);item(s,u,new ItemStack(Items.POTATO),1,2,1);
         text(s,u,"Vegetables make vegetable mash. Add four vegetables: potatoes, carrots or beetroot.",1,2,1);
         fill(s,u,1,2,1,Drink.Kind.GRAIN);item(s,u,new ItemStack(Items.WHEAT),1,2,1);
-        text(s,u,"Use four portions of wheat to make grain mash.",1,2,1);
+        text(s,u,"Use four portions of wheat, oat or barley to make grain mash.",1,2,1);
         s.addKeyframe();s.world().showSection(u.select().position(1,4,3),Direction.UP);s.idle(15);
         text(s,u,"Attach a Dry Chamber underneath a pipe between the head and the condenser. It is an optional modifier, not a separate pipe route.",1,4,3);
         item(s,u,new ItemStack(Herbs.ribwort()),1,4,3);

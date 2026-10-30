@@ -1,0 +1,25 @@
+{
+  "replace": false,
+  "values": [
+    "alconautics:sugar_moonshine",
+    "alconautics:flowing_sugar_moonshine",
+    "alconautics:sugar_moonshine_long",
+    "alconautics:flowing_sugar_moonshine_long",
+    "alconautics:sugar_moonshine_strong",
+    "alconautics:flowing_sugar_moonshine_strong",
+    "alconautics:fruit_moonshine",
+    "alconautics:flowing_fruit_moonshine",
+    "alconautics:fruit_moonshine_long",
+    "alconautics:flowing_fruit_moonshine_long",
+    "alconautics:fruit_moonshine_strong",
+    "alconautics:flowing_fruit_moonshine_strong",
+    "alconautics:vegetable_moonshine",
+    "alconautics:flowing_vegetable_moonshine",
+    "alconautics:grain_moonshine",
+    "alconautics:flowing_grain_moonshine",
+    "alconautics:grain_moonshine_long",
+    "alconautics:flowing_grain_moonshine_long",
+    "alconautics:grain_moonshine_strong",
+    "alconautics:flowing_grain_moonshine_strong"
+  ]
+}

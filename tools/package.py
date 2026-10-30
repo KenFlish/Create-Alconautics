@@ -4,9 +4,9 @@ import shutil, zipfile, hashlib, json
 
 root=Path(__file__).resolve().parents[1]
 output=root/'dist';output.mkdir(exist_ok=True)
-jar=root/'build/libs/create-alconautics-0.1.7.jar'
+jar=root/'build/libs/create-alconautics-0.1.8.jar'
 shutil.copy2(jar,output/jar.name)
-archive=output/'create-alconautics-0.1.7-sources.zip'
+archive=output/'create-alconautics-0.1.8-sources.zip'
 with zipfile.ZipFile(archive,'w',zipfile.ZIP_DEFLATED) as z:
     for folder in ('src','art/source','gradle','docs'):
         for p in sorted((root/folder).rglob('*')):
@@ -22,5 +22,10 @@ with zipfile.ZipFile(jar) as z:
     assert all(not n.endswith('.bbmodel') for n in z.namelist()), 'Source artwork included in release'
     assert all('assets/alconautics/models/block/'+name+'.obj' in z.namelist() for name in ('moonshine_bottle_single','moonshine_bottle_pair_0','moonshine_bottle_pair_1')), 'Bottle models missing'
     assert not any(n.endswith('.jar') for n in z.namelist()), 'Dependency JARs must not be embedded'
+    for effect in ('courage','shrinking'):
+        assert z.read('assets/alconautics/textures/mob_effect/'+effect+'.png') == (root/'art/source'/f'{effect}_icon.png').read_bytes(), 'Effect icon differs from supplied artwork'
+    assert 'assets/minecraft/atlases/mob_effects.json' not in z.namelist(), 'Old Courage icon override must not return'
+    assert len(json.loads(z.read('data/c/tags/fluid/ethanol.json'))['values']) == 20, 'All finished moonshine fluids must be fuel'
+    assert json.loads(z.read('data/alconautics/tags/item/grains.json'))['values'] == ['minecraft:wheat','farm_and_charm:oat','farm_and_charm:barley'], 'Grain ingredients missing'
 (output/'SHA256SUMS.txt').write_text('\n'.join(hashlib.sha256(p.read_bytes()).hexdigest()+'  '+p.name for p in (output/jar.name,archive))+'\n',encoding='utf-8')
 print('Packaged:',jar.name,archive.name)

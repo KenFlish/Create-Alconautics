@@ -10,16 +10,16 @@
       "item": "farm_and_charm:yeast"
     },
     {
-      "item": "minecraft:wheat"
+      "tag": "alconautics:grains"
     },
     {
-      "item": "minecraft:wheat"
+      "tag": "alconautics:grains"
     },
     {
-      "item": "minecraft:wheat"
+      "tag": "alconautics:grains"
     },
     {
-      "item": "minecraft:wheat"
+      "tag": "alconautics:grains"
     }
   ],
   "results": [

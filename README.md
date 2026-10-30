@@ -21,6 +21,8 @@ Add a Dry Chamber beneath the vapour pipe and enhance your drinks with herbs fro
 
 Produce **sugar, fruit, vegetable, and grain moonshine**. Grow taller, shrink smaller, or enjoy **High Spirits**, combining strength, faster mining, and absorption.
 
+Make grain mash from wheat, oats, or barley from Farm & Charm.
+
 Drink your creations or display them in your tavern. Place two bottles together, mix different varieties, and check their contents just by looking at them.
 
 Need a hand getting started? Built-in **Ponder scenes** explain the process.
@@ -31,11 +33,15 @@ Need a hand getting started? Built-in **Ponder scenes** explain the process.
 
 Physical moonshine bottles can shatter on impact with a small explosion and a cloud of intoxicating vapour.
 
-### Create: Diesel Generators - Coming Next Update
+### Create: Diesel Generators
 
 Use moonshine as fuel for the Chemical Sprayer.
 
-Both integrations are optional - neither mod is required to play Alconautics.
+### Just Enough Items
+
+Browse distillation and condensation in JEI, with machinery previews, fluid inputs and outputs, herbs, heating, and cooling requirements.
+
+All integrations are optional - none of these mods is required to play Alconautics.
 
 ## Requirements
 

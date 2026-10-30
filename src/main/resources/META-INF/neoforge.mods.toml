@@ -3,10 +3,22 @@ loaderVersion="[4,)"
 license="MIT (code); see ASSET-NOTICES.md for models and referenced textures"
 [[mods]]
 modId="alconautics"
-version="0.1.7"
+version="0.1.8"
 displayName="Create: Alconautics"
 authors="vic"
 description='''A copper distillery for Create and Let's Do Brewery: mash, vapour, waterlogged condensers and moonshine.'''
+[[dependencies.alconautics]]
+modId="jei"
+type="optional"
+versionRange="[19.69,20)"
+ordering="AFTER"
+side="CLIENT"
+[[dependencies.alconautics]]
+modId="createdieselgenerators"
+type="optional"
+versionRange="[1.21.1-1.3.15,)"
+ordering="AFTER"
+side="BOTH"
 [[dependencies.alconautics]]
 modId="sable"
 type="optional"
