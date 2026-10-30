@@ -39,6 +39,9 @@ public final class TinctureTests {
         h.assertTrue(TinctureAge.years(stack)==5 && TinctureAge.amplifier(stack)==1,"Five-year tincture must gain level II");
         var fresh=item(Tincture.DANDELION);TinctureAge.update(fresh,999999999L);
         h.assertTrue(TinctureAge.years(fresh)==0,"New bottles must not inherit the world's age");
+        TinctureAge.update(fresh,999999999L+24000L);
+        h.assertTrue(TinctureAge.years(fresh)==0 && TinctureAge.daysUntilNextLevel(fresh)==Config.TINCTURE_DAYS_PER_YEAR.get()*5-1,"Days until improvement must advance before a full year passes");
+        h.assertTrue(TinctureAge.daysUntilNextLevel(stack)==-1,"Fully matured tinctures have no next effect level");
         var moonshine=Content.DRINKS.values().iterator().next().get().getDefaultInstance();TinctureAge.update(moonshine,999999999L);
         h.assertTrue(!moonshine.has(net.minecraft.core.component.DataComponents.CUSTOM_DATA),"Moonshine must never acquire aging data");
         var be=place(h,Tincture.BERRY);be.addBottle(stack);
@@ -67,8 +70,12 @@ public final class TinctureTests {
     @GameTest(template="empty",timeoutTicks=20)
     public static void tincture_selection_and_compaction(GameTestHelper h) {
         var be=place(h,Tincture.DANDELION);be.addBottle(item(Tincture.DANDELION));be.addBottle(item(Tincture.DANDELION));
-        h.assertTrue(be.getBlockState().getValue(BottleBlock.DRINK)==2,"Triple layout must be encoded in the block state for Minecraft's shape cache");
-        h.assertTrue(be.getBlockState().getShape(h.getLevel(),be.getBlockPos()).bounds().equals(TinctureGeometry.shape(2,Direction.NORTH).bounds()),"Cached collision bounds must match all three bottles");
+        var brewery=net.minecraft.core.registries.BuiltInRegistries.BLOCK.stream().filter(block -> block instanceof net.satisfy.brewery.core.block.BeverageBlock).findFirst().orElseThrow();
+        var nativeBounds=brewery.defaultBlockState().getShape(h.getLevel(),be.getBlockPos()).bounds();
+        for(int layout=0;layout<6;layout++) for(var facing:Direction.Plane.HORIZONTAL) {
+            var state=be.getBlockState().setValue(BottleBlock.DRINK,layout).setValue(BottleBlock.FACING,facing);
+            h.assertTrue(state.getShape(h.getLevel(),be.getBlockPos()).bounds().equals(nativeBounds),"Every tincture arrangement must use Brewery's shared beverage hitbox");
+        }
         for(var facing:Direction.Plane.HORIZONTAL) {
             for(int part=0;part<3;part++) {
                 var c=TinctureGeometry.CENTERS[2][part];double x=c[0],z=c[1];int turn=switch(facing) {case EAST -> 1;case SOUTH -> 2;case WEST -> 3;default -> 0;};

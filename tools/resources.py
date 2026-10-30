@@ -1,6 +1,7 @@
 """Deterministic Blockbench geometry conversion and recipe/localization generation."""
 from pathlib import Path
 import json, math, base64, re, shutil, zipfile, itertools
+from model_parts import bottle_parts
 R=Path(__file__).resolve().parents[1]/'src/main/resources'
 def write(path,data):
     p=R/path;p.parent.mkdir(parents=True,exist_ok=True)
@@ -35,9 +36,10 @@ for src,dst in names.items():
         mtl+=['newmtl tex'+str(i),'Kd 1 1 1','map_Kd #'+str(i),'']
     textures['particle']=textures['0']
     obj=['# Converted from user-provided Blockbench geometry','mtllib '+dst+'.mtl']
+    part_by_uuid={e['uuid']:part for part,group in enumerate(bottle_parts(m,multi_models[src])) for e in group} if src in multi_models else {}
     index=0
     for element_number,element in enumerate(m['elements']):
-        if src in multi_models:obj+=['g bottle_'+str(element_number//4)]
+        if src in multi_models:obj+=['g bottle_'+str(part_by_uuid[element['uuid']])]
         x0,y0,z0=element['from'];x1,y1,z1=element['to']
         faces={'north':[(x1,y0,z0),(x0,y0,z0),(x0,y1,z0),(x1,y1,z0)],'south':[(x0,y0,z1),(x1,y0,z1),(x1,y1,z1),(x0,y1,z1)],'west':[(x0,y0,z0),(x0,y0,z1),(x0,y1,z1),(x0,y1,z0)],'east':[(x1,y0,z1),(x1,y0,z0),(x1,y1,z0),(x1,y1,z1)],'up':[(x0,y1,z1),(x1,y1,z1),(x1,y1,z0),(x0,y1,z0)],'down':[(x0,y0,z0),(x1,y0,z0),(x1,y0,z1),(x0,y0,z1)]}
         for face,props in element.get('faces',{}).items():
@@ -89,8 +91,14 @@ write('assets/alconautics/blockstates/moonshine_bottle.json',{'variants':{f'drin
 write('assets/alconautics/models/block/moonshine_bottle.json',{'textures':{'particle':'alconautics:block/moonshine_bottle_single_0'},'elements':[]})
 # Collision bounds use transformed corners, including the pair's arbitrary Y rotations.
 variants=[]
+bottle_centers=[]
 for src in ['samogon','2samodona']:
     m=json.loads((R.parents[2]/'art/source'/f'{src}.bbmodel').read_text(encoding='utf-8'))
+    centers=[]
+    for group in bottle_parts(m,1 if src=='samogon' else 2):
+        points=[rotate(p,e.get('rotation',[0,0,0]),e.get('origin',[8,8,8])) for e in group for p in itertools.product(*zip(e['from'],e['to']))]
+        centers.append([(min(p[i] for p in points)+max(p[i] for p in points))/2 for i in (0,2)])
+    bottle_centers.append(centers)
     boxes=[]
     for e in m['elements']:
         if any(abs(a-b)<1e-6 for a,b in zip(e['from'],e['to'])):continue
@@ -111,14 +119,15 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.shapes.*;
 /** Generated from the two supplied Blockbench models by tools/resources.py. */
-final class BottleShapes {
+public final class BottleShapes {
+    public static final float[][][] CENTERS = %s;
     private static final VoxelShape[] SHAPES = {%s};
     static VoxelShape get(int count,Direction facing) {
         int turn=switch(facing) {case EAST -> 1;case SOUTH -> 2;case WEST -> 3;default -> 0;};
         return SHAPES[(count-1)*4+turn];
     }
 }
-'''%(',\n'.join(variants)),encoding='utf-8')
+'''%('{'+','.join('{'+','.join('{'+','.join(str(round(v,7))+'f' for v in center)+'}' for center in centers)+'}' for centers in bottle_centers)+'}',',\n'.join(variants)),encoding='utf-8')
 for kind,var in drinks:
     name=kind+'_moonshine'+var
     write(f'assets/alconautics/models/item/{name}.json',{'parent':'minecraft:item/generated','textures':{'layer0':'alconautics:item/moonshine'}})

@@ -68,7 +68,8 @@ public class BottleBlock extends Block implements EntityBlock {
         double x=(hit.x-pos.getX())*16,z=(hit.z-pos.getZ())*16;
         int turns=switch(state.getValue(FACING)) {case EAST -> 1;case SOUTH -> 2;case WEST -> 3;default -> 0;};
         for(int i=0;i<turns;i++) { double old=x;x=z;z=16-old; }
-        return Math.pow(x-5,2)+Math.pow(z-5,2)<=Math.pow(x-11,2)+Math.pow(z-11,2)?0:1;
+        var centers=BottleShapes.CENTERS[1];
+        return Math.pow(x/16-centers[0][0],2)+Math.pow(z/16-centers[0][1],2)<=Math.pow(x/16-centers[1][0],2)+Math.pow(z/16-centers[1][1],2)?0:1;
     }
     @Override protected void onRemove(BlockState old,Level level,BlockPos pos,BlockState next,boolean moving) {
         if(!old.is(next.getBlock()) && !level.isClientSide && level.getBlockEntity(pos) instanceof BottleBE bottles) {

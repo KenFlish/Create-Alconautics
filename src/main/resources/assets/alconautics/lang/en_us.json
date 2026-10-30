@@ -126,5 +126,7 @@
   "item.alconautics.berry_tincture": "Berry Tincture",
   "fluid.alconautics.berry_tincture": "Berry Tincture",
   "block.alconautics.tincture_bottles": "Tincture Bottles",
-  "tooltip.alconautics.tincture_age": "Aged: %s years"
+  "tooltip.alconautics.tincture_age": "Age: %s",
+  "tooltip.alconautics.tincture_next_quality": "Days Left to Improve Quality: %s",
+  "tooltip.alconautics.tincture_fully_aged": "Fully Aged"
 }

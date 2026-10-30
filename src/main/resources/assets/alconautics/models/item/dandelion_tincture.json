@@ -1,3 +1,6 @@
 {
-  "parent": "alconautics:block/dandelion_tincture_single"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "alconautics:item/dandelion_tincture"
+  }
 }

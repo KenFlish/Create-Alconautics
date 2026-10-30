@@ -24,10 +24,10 @@ public final class BottleRenderer implements BlockEntityRenderer<BottleBE> {
         pose.pushPose();pose.translate(0,.002,0);pose.translate(.5,0,.5);pose.mulPose(Axis.YP.rotationDegrees(-angle));pose.translate(-.5,0,-.5);
         for(int slot=0;slot<count;slot++) {
             pose.pushPose();
-            float pivot=count==1?.5f:slot==0?5/16f:11/16f;
-            pose.translate(pivot-.5,0,pivot-.5);
+            var pivot=BottleShapes.CENTERS[count-1][slot];
+            pose.translate(pivot[0]-.5,0,pivot[1]-.5);
             WobbleAnimation.apply(pose,bottles.getLevel(),bottles.getWobbleStart(),partial,WobbleAnimation.seed(bottles.getBlockPos().asLong()+slot));
-            pose.translate(.5-pivot,0,.5-pivot);
+            pose.translate(.5-pivot[0],0,.5-pivot[1]);
             var model=mc.getModelManager().getModel(count==1?SINGLE:slot==0?FIRST:SECOND);
             mc.getBlockRenderer().getModelRenderer().renderModel(pose.last(),buffers.getBuffer(RenderType.cutout()),state,model,1,1,1,light,overlay);
             pose.popPose();

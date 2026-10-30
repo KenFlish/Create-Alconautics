@@ -51,7 +51,15 @@ public final class TinctureItem extends Item {
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
     @Override public void appendHoverText(ItemStack stack,TooltipContext context,List<Component> out,TooltipFlag flag) {
-        out.add(Component.translatable("tooltip.alconautics.tincture_age",TinctureAge.years(stack)).withStyle(net.minecraft.ChatFormatting.GRAY));
         PotionContents.addPotionTooltip(List.of(new MobEffectInstance(kind.effect(),TinctureAge.duration(stack,kind),TinctureAge.amplifier(stack))),out::add,1,context.tickRate());
+        out.add(Component.empty());
+        out.add(Component.translatable("tooltip.alconautics.tincture_age",TinctureAge.years(stack)).withStyle(net.minecraft.ChatFormatting.WHITE));
+        int days=TinctureAge.daysUntilNextLevel(stack);
+        out.add(Component.empty());
+        if(days>0) {
+            out.add(Component.translatable("tooltip.alconautics.tincture_next_quality",days).withStyle(style -> style.withColor(0x93C47D)));
+        } else {
+            out.add(Component.translatable("tooltip.alconautics.tincture_fully_aged").withStyle(net.minecraft.ChatFormatting.GOLD));
+        }
     }
 }

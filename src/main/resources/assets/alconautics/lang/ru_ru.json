@@ -125,6 +125,8 @@
   "fluid.alconautics.dandelion_tincture": "Одуванчиковая настойка",
   "item.alconautics.berry_tincture": "Ягодная настойка",
   "fluid.alconautics.berry_tincture": "Ягодная настойка",
-  "block.alconautics.tincture_bottles": "Бутылочки настойки",
-  "tooltip.alconautics.tincture_age": "Выдержка: %s г."
+  "block.alconautics.tincture_bottles": "Настойка",
+  "tooltip.alconautics.tincture_age": "Выдержка: %s",
+  "tooltip.alconautics.tincture_next_quality": "Осталось дней до повышения качества: %s",
+  "tooltip.alconautics.tincture_fully_aged": "Полностью выдержана"
 }
