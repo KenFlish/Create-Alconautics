@@ -35,7 +35,7 @@ public final class VisualCheck {
         }
         if(ponder && !started && mc.level!=null && mc.player!=null && mc.getOverlay()==null) {
             started=true;
-            var ui=net.createmod.ponder.foundation.ui.PonderUI.of(Content.COOLER_ITEM.get().getDefaultInstance());
+            var ui=net.createmod.ponder.foundation.ui.PonderUI.of(Boolean.getBoolean("alconautics.renderDry")?net.minecraft.world.item.Items.STICK.getDefaultInstance():Content.COOLER_ITEM.get().getDefaultInstance());
             if(Boolean.getBoolean("alconautics.renderScene")) {
                 mc.getWindow().setWindowed(1920,1080);
                 mc.setScreen(new CleanRender(ui.getActiveScene()));
@@ -48,10 +48,11 @@ public final class VisualCheck {
         if(started && Boolean.getBoolean("alconautics.renderScene")) {
             ticks++;
             var ui=(CleanRender)mc.screen;
-            if(ticks==5) ui.seekToTime(1100);
-            if(ticks==60) Screenshot.grab(mc.gameDirectory,"alconautics-apparatus-dark.png",mc.getMainRenderTarget(),message -> System.out.println("ALCONAUTICS_RENDER: "+message.getString()));
+            if(ticks==5) ui.seekToTime(Boolean.getBoolean("alconautics.renderDry")?100:1100);
+            String name=Boolean.getBoolean("alconautics.renderDry")?"dry-chamber":"apparatus";
+            if(ticks==60) Screenshot.grab(mc.gameDirectory,"alconautics-"+name+"-dark.png",mc.getMainRenderTarget(),message -> System.out.println("ALCONAUTICS_RENDER: "+message.getString()));
             if(ticks==80) ui.light=true;
-            if(ticks==110) Screenshot.grab(mc.gameDirectory,"alconautics-apparatus-light.png",mc.getMainRenderTarget(),message -> System.out.println("ALCONAUTICS_RENDER: "+message.getString()));
+            if(ticks==110) Screenshot.grab(mc.gameDirectory,"alconautics-"+name+"-light.png",mc.getMainRenderTarget(),message -> System.out.println("ALCONAUTICS_RENDER: "+message.getString()));
             if(ticks==140) mc.stop();
             return;
         }
@@ -103,12 +104,14 @@ public final class VisualCheck {
         @Override public void render(GuiGraphics g,int mouseX,int mouseY,float partial) {
             g.fillGradient(0,0,width,height,light?0xffe9eff2:0xff273b4c,light?0xffc9d6df:0xff101b25);
             g.pose().pushPose();
-            g.pose().translate(0,height*.055,0);
+            boolean dry=Boolean.getBoolean("alconautics.renderDry");
+            g.pose().translate(dry?-width*.17:0,height*.055,0);
             g.pose().translate(width/2.0,height/2.0,0);
             g.pose().scale(1.13f,1.13f,1.13f);
             g.pose().translate(-width/2.0,-height/2.0,0);
             renderScene(g,0,0,0,partial);
             g.pose().popPose();
+            if(dry) DryRender.cards(g,font,width,height,light);
         }
     }
     private static final class DetailsPreview extends Screen {

@@ -16,10 +16,11 @@ neoForge {
                 systemProperty 'alconautics.bottleCheck', 'true'
                 gameDirectory = project.file('run-visual')
             }
-            if (project.hasProperty('visualCheck') || project.hasProperty('ponderCheck') || project.hasProperty('renderScene')) {
+            if (project.hasProperty('visualCheck') || project.hasProperty('ponderCheck') || project.hasProperty('renderScene') || project.hasProperty('renderDry')) {
                 systemProperty 'alconautics.visualCheck', 'true'
-                systemProperty 'alconautics.ponderCheck', (project.hasProperty('ponderCheck') || project.hasProperty('renderScene')).toString()
-                systemProperty 'alconautics.renderScene', project.hasProperty('renderScene').toString()
+                systemProperty 'alconautics.ponderCheck', (project.hasProperty('ponderCheck') || project.hasProperty('renderScene') || project.hasProperty('renderDry')).toString()
+                systemProperty 'alconautics.renderScene', (project.hasProperty('renderScene') || project.hasProperty('renderDry')).toString()
+                systemProperty 'alconautics.renderDry', project.hasProperty('renderDry').toString()
                 gameDirectory = project.file('run-visual')
             }
         }
