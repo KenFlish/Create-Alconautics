@@ -120,5 +120,11 @@
   "alconautics.ponder.mash_and_dry_chamber.text_6": "Подвѣсьте сухопарникъ подъ трубой между головкой и конденсаторомъ. Онъ добавляетъ модификаторъ и не требуетъ отдѣльной линіи трубъ.",
   "alconautics.ponder.mash_and_dry_chamber.text_7": "Подорожникъ увеличиваетъ длительность положительнаго эффекта напитка.",
   "alconautics.ponder.mash_and_dry_chamber.text_8": "Крапива даётъ II уровень эффекта на 90 секундъ. Выбирайте длительность или силу: эти добавки не складываются.",
-  "alconautics.ponder.mash_and_dry_chamber.text_9": "Одна трава обрабатываетъ 1000 мБ. У овощного самогона нѣтъ положительнаго эффекта для усиленія, поэтому добавка не расходуется."
+  "alconautics.ponder.mash_and_dry_chamber.text_9": "Одна трава обрабатываетъ 1000 мБ. У овощного самогона нѣтъ положительнаго эффекта для усиленія, поэтому добавка не расходуется.",
+  "item.alconautics.dandelion_tincture": "Одуванчиковая настойка",
+  "fluid.alconautics.dandelion_tincture": "Одуванчиковая настойка",
+  "item.alconautics.berry_tincture": "Ягодная настойка",
+  "fluid.alconautics.berry_tincture": "Ягодная настойка",
+  "block.alconautics.tincture_bottles": "Бутылочки настойки",
+  "tooltip.alconautics.tincture_age": "Выдержка: %s лѣтъ"
 }

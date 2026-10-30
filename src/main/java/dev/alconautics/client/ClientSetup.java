@@ -16,6 +16,7 @@ public final class ClientSetup {
     }
     @SubscribeEvent public static void models(net.neoforged.neoforge.client.event.ModelEvent.RegisterAdditional event) {
         event.register(BottleRenderer.SINGLE);event.register(BottleRenderer.FIRST);event.register(BottleRenderer.SECOND);
+        for(var name:TinctureGeometry.MODELS) event.register(TinctureRenderer.model(name));
     }
     @SubscribeEvent public static void setup(net.neoforged.fml.event.lifecycle.FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
@@ -26,7 +27,7 @@ public final class ClientSetup {
     @SubscribeEvent public static void fluids(RegisterClientExtensionsEvent event) {
         for(var f:Content.ALL_FLUIDS) {
             boolean vapour=f.id.endsWith("vapour"); boolean mash=f.id.endsWith("mash");
-            int color=vapour?0x99f4f3ef:0xffefeee8;
+            int color=f.id.contains("dandelion_tincture")?0xffdab84e:f.id.contains("berry_tincture")?0xffa84952:vapour?0x99f4f3ef:0xffefeee8;
             event.registerFluidType(new IClientFluidTypeExtensions() {
                 public ResourceLocation getStillTexture() { return ResourceLocation.withDefaultNamespace("block/water_still"); }
                 public ResourceLocation getFlowingTexture() { return ResourceLocation.withDefaultNamespace("block/water_flow"); }

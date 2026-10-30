@@ -15,6 +15,7 @@ public final class BottleRenderer implements BlockEntityRenderer<BottleBE> {
     private static ModelResourceLocation model(String name) { return ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(Alconautics.ID,"block/"+name)); }
     public BottleRenderer(BlockEntityRendererProvider.Context context) {}
     @Override public void render(BottleBE bottles,float partial,PoseStack pose,MultiBufferSource buffers,int light,int overlay) {
+        if(bottles.getBlockState().getBlock() instanceof TinctureBlock) { TinctureRenderer.render(bottles,partial,pose,buffers,light,overlay);return; }
         var inventory=bottles.getInventory();
         int count=inventory.get(0).isEmpty()?0:inventory.get(1).isEmpty()?1:2;
         if(count==0) return;

@@ -76,7 +76,7 @@ with zipfile.ZipFile(sable) as z:
             (ROOT/'libs/compile'/Path(name).name).write_bytes(z.read(name))
 
 # Optional APIs are development inputs; enable -PcompatCheck for runtime tests.
-for project,filename in [('create-diesel-generators','createdieselgenerators-1.21.1-1.3.15.jar'),('jei','jei-1.21.1-neoforge-19.69.0.457.jar')]:
+for project,filename in [('create-diesel-generators','createdieselgenerators-1.21.1-1.3.15.jar'),('jei','jei-1.21.1-neoforge-19.69.0.457.jar'),('GWp4jCJj','createbigcannons-5.11.7+mc.1.21.1.jar'),('B3pb093D','ritchiesprojectilelib-2.1.2+mc.1.21.1-neoforge.jar')]:
     target=ROOT/'libs/compile'/filename
     if target.exists(): continue
     request=urllib.request.Request('https://api.modrinth.com/v2/project/'+project+'/version',headers={'User-Agent':'Alconautics-Development/0.1'})

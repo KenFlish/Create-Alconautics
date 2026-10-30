@@ -17,11 +17,14 @@ import net.minecraft.world.phys.shapes.*;
 public class BottleBlock extends Block implements EntityBlock {
     /** Retained to migrate bottles placed by releases up to 0.1.5. */
     public static final IntegerProperty DRINK=IntegerProperty.create("drink",0,9);
-    public static final IntegerProperty COUNT=IntegerProperty.create("bottles",1,2);
+    public static final IntegerProperty COUNT=IntegerProperty.create("bottles",1,3);
     public static final DirectionProperty FACING=BlockStateProperties.HORIZONTAL_FACING;
     public BottleBlock(Properties props) { super(props);registerDefaultState(stateDefinition.any().setValue(DRINK,0).setValue(COUNT,1).setValue(FACING,Direction.NORTH)); }
     @Override protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> b) { b.add(DRINK,COUNT,FACING); }
     @Override public BlockEntity newBlockEntity(BlockPos pos,BlockState state) { return new BottleBE(pos,state); }
+    @Override public <T extends BlockEntity> net.minecraft.world.level.block.entity.BlockEntityTicker<T> getTicker(Level level,BlockState state,net.minecraft.world.level.block.entity.BlockEntityType<T> type) {
+        return !level.isClientSide && type==Content.BOTTLE_BE.get()?(world,pos,s,be) -> { if(world.getGameTime()%200==0) ((BottleBE)be).ageBottles(); }:null;
+    }
     @Override protected RenderShape getRenderShape(BlockState state) { return RenderShape.ENTITYBLOCK_ANIMATED; }
     @Override protected BlockState rotate(BlockState s,Rotation r) { return s.setValue(FACING,r.rotate(s.getValue(FACING))); }
     @Override protected BlockState mirror(BlockState s,Mirror m) { return s.rotate(m.getRotation(s.getValue(FACING))); }
@@ -30,7 +33,7 @@ public class BottleBlock extends Block implements EntityBlock {
         if(l.getBlockEntity(p) instanceof BottleBE bottles && !bottles.getInventory().getFirst().isEmpty()) return bottles.getInventory().getFirst().copy();
         return Content.DRINKS.get(Drink.ALL.get(s.getValue(DRINK))).get().getDefaultInstance();
     }
-    @Override protected VoxelShape getShape(BlockState s,BlockGetter l,BlockPos p,CollisionContext c) { return BottleShapes.get(s.getValue(COUNT),s.getValue(FACING)); }
+    @Override protected VoxelShape getShape(BlockState s,BlockGetter l,BlockPos p,CollisionContext c) { return BottleShapes.get(Math.min(2,s.getValue(COUNT)),s.getValue(FACING)); }
     @Override protected boolean canSurvive(BlockState s,LevelReader l,BlockPos p) { return true; }
     @Override protected BlockState updateShape(BlockState s,Direction d,BlockState other,LevelAccessor l,BlockPos p,BlockPos q) {
         return super.updateShape(s,d,other,l,p,q);
@@ -39,7 +42,7 @@ public class BottleBlock extends Block implements EntityBlock {
         return level.mayInteract(player,pos) && player.mayUseItemAt(pos,face,stack);
     }
     @Override protected ItemInteractionResult useItemOn(ItemStack stack,BlockState s,Level l,BlockPos pos,Player p,InteractionHand hand,BlockHitResult hit) {
-        if(!(stack.getItem() instanceof MoonshineItem)) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        if(!(stack.getItem() instanceof MoonshineItem) && !(stack.getItem() instanceof TinctureItem)) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         if(!mayUse(l,pos,p,hit.getDirection(),stack)) return ItemInteractionResult.FAIL;
         if(l.getBlockEntity(pos) instanceof BottleBE bottles && !l.isClientSide && bottles.addBottle(stack)) {
             if(!p.isCreative()) stack.shrink(1);
@@ -51,7 +54,7 @@ public class BottleBlock extends Block implements EntityBlock {
         if(!p.getMainHandItem().isEmpty()) return InteractionResult.PASS;
         if(!mayUse(l,pos,p,hit.getDirection(),ItemStack.EMPTY)) return InteractionResult.FAIL;
         if(!l.isClientSide && l.getBlockEntity(pos) instanceof BottleBE bottles) {
-            ItemStack result=bottles.takeBottle(selectedSlot(s,pos,hit.getLocation()));
+            ItemStack result=bottles.takeBottle(this instanceof TinctureBlock?TinctureGeometry.selectedSlot(bottles.getInventory(),s.getValue(FACING),pos,hit.getLocation()):selectedSlot(s,pos,hit.getLocation()));
             if(!result.isEmpty() && !p.addItem(result)) p.drop(result,false);
             l.playSound(null,pos,net.minecraft.sounds.SoundEvents.BOTTLE_EMPTY,net.minecraft.sounds.SoundSource.BLOCKS,1,1);
         }

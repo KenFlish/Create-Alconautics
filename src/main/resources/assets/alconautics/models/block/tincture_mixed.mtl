@@ -1,0 +1,7 @@
+newmtl tex0
+Kd 1 1 1
+map_Kd #0
+
+newmtl tex1
+Kd 1 1 1
+map_Kd #1

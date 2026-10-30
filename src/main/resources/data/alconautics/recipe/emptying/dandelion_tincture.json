@@ -1,0 +1,17 @@
+{
+  "type": "create:emptying",
+  "ingredients": [
+    {
+      "item": "alconautics:dandelion_tincture"
+    }
+  ],
+  "results": [
+    {
+      "id": "minecraft:glass_bottle"
+    },
+    {
+      "id": "alconautics:dandelion_tincture",
+      "amount": 250
+    }
+  ]
+}

@@ -120,5 +120,11 @@
   "alconautics.ponder.mash_and_dry_chamber.text_6": "Attach a Dry Chamber underneath a pipe between the head and the condenser. It is an optional modifier, not a separate pipe route.",
   "alconautics.ponder.mash_and_dry_chamber.text_7": "Ribwort extends the duration of a drink’s positive effect.",
   "alconautics.ponder.mash_and_dry_chamber.text_8": "Nettle grants effect level II for 90 seconds. Choose duration or strength; these modifiers do not stack.",
-  "alconautics.ponder.mash_and_dry_chamber.text_9": "One herb treats 1000 mB. Vegetable moonshine has no positive effect to enhance and does not consume the modifier."
+  "alconautics.ponder.mash_and_dry_chamber.text_9": "One herb treats 1000 mB. Vegetable moonshine has no positive effect to enhance and does not consume the modifier.",
+  "item.alconautics.dandelion_tincture": "Dandelion Tincture",
+  "fluid.alconautics.dandelion_tincture": "Dandelion Tincture",
+  "item.alconautics.berry_tincture": "Berry Tincture",
+  "fluid.alconautics.berry_tincture": "Berry Tincture",
+  "block.alconautics.tincture_bottles": "Tincture Bottles",
+  "tooltip.alconautics.tincture_age": "Aged: %s years"
 }

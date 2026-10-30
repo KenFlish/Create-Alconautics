@@ -1,0 +1,23 @@
+{
+  "type": "create:mixing",
+  "ingredients": [
+    {
+      "type": "neoforge:tag",
+      "tag": "alconautics:moonshine",
+      "amount": 250
+    },
+    {
+      "tag": "alconautics:berries"
+    },
+    {
+      "tag": "alconautics:berries"
+    }
+  ],
+  "results": [
+    {
+      "id": "alconautics:berry_tincture",
+      "amount": 250
+    }
+  ],
+  "processingTime": 200
+}

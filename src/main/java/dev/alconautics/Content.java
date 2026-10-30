@@ -29,10 +29,11 @@ public final class Content {
         var props=BlockBehaviour.Properties.of().strength(.3f).sound(SoundType.GLASS).noOcclusion();
         return net.neoforged.fml.ModList.get().isLoaded("sable")?dev.alconautics.compat.SableCompat.createBottle(props):new BottleBlock(props);
     });
+    public static final DeferredBlock<TinctureBlock> TINCTURE_BOTTLES=BLOCKS.register("tincture_bottles",() -> new TinctureBlock(BlockBehaviour.Properties.of().strength(.3f).sound(SoundType.GLASS).noOcclusion()));
     public static final DeferredItem<BlockItem> HEAD_ITEM = ITEMS.registerSimpleBlockItem(HEAD);
     public static final DeferredItem<BlockItem> COOLER_ITEM = ITEMS.registerSimpleBlockItem(COOLER);
     public static final DeferredItem<BlockItem> DRY_ITEM = ITEMS.registerSimpleBlockItem(DRY);
-    public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<BottleBE>> BOTTLE_BE = BES.register("moonshine_bottle",() -> BlockEntityType.Builder.of(BottleBE::new,BOTTLE.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<BottleBE>> BOTTLE_BE = BES.register("moonshine_bottle",() -> BlockEntityType.Builder.of(BottleBE::new,BOTTLE.get(),TINCTURE_BOTTLES.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HeadBE>> HEAD_BE = BES.register("distillation_head", () -> BlockEntityType.Builder.of(HeadBE::new, HEAD.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CoolerBE>> COOLER_BE = BES.register("condenser_base", () -> BlockEntityType.Builder.of(CoolerBE::new, COOLER.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DryBE>> DRY_BE = BES.register("dry_chamber", () -> BlockEntityType.Builder.of(DryBE::new, DRY.get()).build(null));
@@ -43,12 +44,18 @@ public final class Content {
     public static final Map<Drink, FluidSet> VAPOUR = new LinkedHashMap<>(), SPIRITS = new LinkedHashMap<>();
     public static final Map<Drink, DeferredItem<MoonshineItem>> DRINKS = new LinkedHashMap<>();
     public static final List<FluidSet> ALL_FLUIDS = new ArrayList<>();
+    public static final Map<Tincture,FluidSet> TINCTURES=new EnumMap<>(Tincture.class);
+    public static final Map<Tincture,DeferredItem<TinctureItem>> TINCTURE_ITEMS=new EnumMap<>(Tincture.class);
     static {
         for (var kind : Drink.Kind.values()) MASH.put(kind, fluid(kind.id() + "_mash", false));
         for (var drink : Drink.ALL) {
             SPIRITS.put(drink, fluid(drink.id(), false));
             VAPOUR.put(drink, fluid(drink.id() + "_vapour", true));
             DRINKS.put(drink, ITEMS.register(drink.id(), () -> new MoonshineItem(new Item.Properties().stacksTo(16), drink)));
+        }
+        for(var tincture:Tincture.values()) {
+            TINCTURES.put(tincture,fluid(tincture.id(),false));
+            TINCTURE_ITEMS.put(tincture,ITEMS.register(tincture.id(),() -> new TinctureItem(new Item.Properties().stacksTo(16),tincture)));
         }
     }
     public static final class FluidSet {
@@ -73,5 +80,6 @@ public final class Content {
     public static Drink.Kind mashKind(Fluid fluid) { return MASH.entrySet().stream().filter(e -> e.getValue().matches(fluid)).map(Map.Entry::getKey).findFirst().orElse(null); }
     public static Drink vapour(Fluid fluid) { return VAPOUR.entrySet().stream().filter(e -> e.getValue().matches(fluid)).map(Map.Entry::getKey).findFirst().orElse(null); }
     public static Drink spirit(Fluid fluid) { return SPIRITS.entrySet().stream().filter(e -> e.getValue().matches(fluid)).map(Map.Entry::getKey).findFirst().orElse(null); }
+    public static boolean finishedDrink(Fluid fluid) { return spirit(fluid)!=null || TINCTURES.values().stream().anyMatch(set -> set.matches(fluid)); }
     public static void register(IEventBus bus) { BLOCKS.register(bus); ITEMS.register(bus); BES.register(bus); TYPES.register(bus); FLUIDS.register(bus); EFFECTS.register(bus); }
 }

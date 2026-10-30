@@ -27,6 +27,12 @@ Drink your creations or display them in your tavern. Place two bottles together,
 
 Need a hand getting started? Built-in **Ponder scenes** explain the process.
 
+## Tinctures Worth Waiting For
+
+Infuse moonshine with dandelions or berries in a Create Basin. Dandelion tincture grants regeneration; berry tincture grants speed. Use berries from other mods through common ingredient tags, including Farm & Charm strawberries.
+
+Let finished bottles age over the years for longer and stronger effects. Display three dandelion bottles, two berry bottles, or one of each together. Each bottle keeps its own age; moonshine does not age.
+
 ## Optional Compatibility
 
 ### Sable
@@ -40,6 +46,10 @@ Use moonshine as fuel for the Chemical Sprayer.
 ### Just Enough Items
 
 Browse distillation and cooling together in JEI: mash goes in, moonshine comes out, with a preview of the complete apparatus.
+
+### Create Big Cannons
+
+Fill Fluid Shells with any Alconautics moonshine or tincture to intoxicate targets with liquid impacts and clouds of vapour.
 
 All integrations are optional - none of these mods is required to play Alconautics.
 

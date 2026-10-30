@@ -1,0 +1,115 @@
+{
+  "loader": "neoforge:obj",
+  "model": "alconautics:models/block/tincture_mixed_0.obj",
+  "automatic_culling": false,
+  "flip_v": true,
+  "textures": {
+    "0": "alconautics:block/tincture_mixed_0",
+    "1": "alconautics:block/tincture_mixed_1",
+    "particle": "alconautics:block/tincture_mixed_0"
+  },
+  "display": {
+    "gui": {
+      "rotation": [
+        35,
+        135,
+        0
+      ],
+      "translation": [
+        0,
+        1.25,
+        0
+      ],
+      "scale": [
+        0.95,
+        0.95,
+        0.95
+      ]
+    },
+    "ground": {
+      "translation": [
+        0,
+        5.5,
+        0
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        -90,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        -14.1
+      ],
+      "scale": [
+        2,
+        2,
+        2
+      ]
+    },
+    "thirdperson_righthand": {
+      "rotation": [
+        15,
+        5,
+        -2.5
+      ],
+      "translation": [
+        -2,
+        3,
+        0.5
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        5,
+        5,
+        10
+      ],
+      "translation": [
+        0.5,
+        1.5,
+        0.5
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        15,
+        5,
+        -2.5
+      ],
+      "translation": [
+        -2,
+        3,
+        0.5
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        5,
+        5,
+        10
+      ],
+      "translation": [
+        0.5,
+        1.5,
+        0.5
+      ]
+    },
+    "head": {
+      "translation": [
+        0,
+        19.2,
+        0
+      ],
+      "scale": [
+        1.6,
+        1.6,
+        1.6
+      ]
+    }
+  },
+  "render_type": "minecraft:cutout"
+}

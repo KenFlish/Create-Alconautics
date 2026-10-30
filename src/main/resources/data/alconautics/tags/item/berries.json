@@ -1,0 +1,20 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:sweet_berries",
+    "minecraft:glow_berries",
+    "farm_and_charm:strawberry",
+    {
+      "id": "#c:foods/berry",
+      "required": false
+    },
+    {
+      "id": "#c:foods/berries",
+      "required": false
+    },
+    {
+      "id": "#c:berries",
+      "required": false
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "alconautics:sugar_moonshine",
+    "alconautics:sugar_moonshine_long",
+    "alconautics:sugar_moonshine_strong",
+    "alconautics:fruit_moonshine",
+    "alconautics:fruit_moonshine_long",
+    "alconautics:fruit_moonshine_strong",
+    "alconautics:vegetable_moonshine",
+    "alconautics:grain_moonshine",
+    "alconautics:grain_moonshine_long",
+    "alconautics:grain_moonshine_strong"
+  ]
+}

@@ -7,6 +7,8 @@ def write(path,data):
     p.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n' if not isinstance(data,str) else data,encoding='utf-8')
 
 names={'golovka':'distillation_head','holodilnik':'condenser_base','suxharnik':'dry_chamber','samogon':'moonshine_bottle_single','2samodona':'moonshine_bottle_pair'}
+names.update({'Oduvan_nastoika':'dandelion_tincture_single','2Oduvan_nastoika':'dandelion_tincture_pair','3Oduvan_nastoika':'dandelion_tincture_triple','Yagod_nastoika':'berry_tincture_single','2Yagod_nastoika':'berry_tincture_pair','Oduvan_i_Yagodna_nastoika':'tincture_mixed'})
+multi_models={'2samodona':2,'2Oduvan_nastoika':2,'3Oduvan_nastoika':3,'2Yagod_nastoika':2,'Oduvan_i_Yagodna_nastoika':2}
 references={'engine.png':'create:block/engine','basin.png':'create:block/basin','roller_metal.png':'create:block/roller_metal','framed_glass.png':'create:block/palettes/framed_glass','item_drain_top.png':'create:block/item_drain_top','fan_blades.png':'create:block/fan_blades','velocity_sensor_2.png':'minecraft:block/copper_block'}
 create_assets=zipfile.ZipFile(R.parents[2]/'libs/create-1.21.1-6.0.10.jar')
 display={'gui':{'rotation':[30,225,0],'translation':[0,0,0],'scale':[.65,.65,.65]},'ground':{'translation':[0,3,0],'scale':[.5,.5,.5]},'fixed':{'scale':[.6,.6,.6]},'thirdperson_righthand':{'rotation':[75,45,0],'translation':[0,2.5,0],'scale':[.375,.375,.375]},'firstperson_righthand':{'rotation':[0,45,0],'translation':[0,0,0],'scale':[.5,.5,.5]}}
@@ -35,7 +37,7 @@ for src,dst in names.items():
     obj=['# Converted from user-provided Blockbench geometry','mtllib '+dst+'.mtl']
     index=0
     for element_number,element in enumerate(m['elements']):
-        if src=='2samodona':obj+=['g bottle_'+str(element_number//4)]
+        if src in multi_models:obj+=['g bottle_'+str(element_number//4)]
         x0,y0,z0=element['from'];x1,y1,z1=element['to']
         faces={'north':[(x1,y0,z0),(x0,y0,z0),(x0,y1,z0),(x1,y1,z0)],'south':[(x0,y0,z1),(x1,y0,z1),(x1,y1,z1),(x0,y1,z1)],'west':[(x0,y0,z0),(x0,y0,z1),(x0,y1,z1),(x0,y1,z0)],'east':[(x1,y0,z1),(x1,y0,z0),(x1,y1,z0),(x1,y1,z1)],'up':[(x0,y1,z1),(x1,y1,z1),(x1,y1,z0),(x0,y1,z0)],'down':[(x0,y0,z0),(x1,y0,z0),(x1,y0,z1),(x0,y0,z1)]}
         for face,props in element.get('faces',{}).items():
@@ -52,8 +54,8 @@ for src,dst in names.items():
     write(f'assets/alconautics/models/block/{dst}.obj','\n'.join(obj)+'\n')
     write(f'assets/alconautics/models/block/{dst}.mtl','\n'.join(mtl))
     model={'loader':'neoforge:obj','model':f'alconautics:models/block/{dst}.obj','automatic_culling':False,'flip_v':True,'textures':textures,'display':display|m.get('display',{}),'render_type':'minecraft:cutout'}
-    if src=='2samodona':
-        for part in range(2):
+    if src in multi_models:
+        for part in range(multi_models[src]):
             selected=False;lines=[]
             for line in obj:
                 if line.startswith('g '):selected=line==f'g bottle_{part}'
@@ -74,7 +76,7 @@ for src,dst in names.items():
             elements.append({'from':e['from'],'to':e['to'],'faces':faces})
         model={'textures':textures,'elements':elements,'ambientocclusion':False,'display':display|m.get('display',{}),'render_type':'minecraft:cutout'}
     write(f'assets/alconautics/models/block/{dst}.json',model)
-    if src not in ('samogon','2samodona'):
+    if src in ('golovka','holodilnik','suxharnik'):
         variants={f'facing={direction}':{'model':f'alconautics:block/{dst}',**({'y':angle} if src=='golovka' else {})} for direction,angle in [('east',0),('south',90),('west',180),('north',270)]}
         write(f'assets/alconautics/blockstates/{dst}.json',{'variants':variants})
         write(f'assets/alconautics/models/item/{dst}.json',{'parent':f'alconautics:block/{dst}'})
@@ -219,3 +221,6 @@ for locale in ['en_us','ru_ru','rpr']:
         for i,text in enumerate(texts,1):lang[prefix+f'text_{i}']=text
     write(f'assets/alconautics/lang/{locale}.json',lang)
 print('Generated models, recipes and localization.')
+
+import runpy
+runpy.run_path(str(R.parents[2]/'tools/tinctures.py'))
