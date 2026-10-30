@@ -89,12 +89,21 @@ public final class BottleTests {
         h.succeed();
     }
     @GameTest(template="empty",timeoutTicks=20)
-    public static void support_loss_drops_both(GameTestHelper h) {
+    public static void bottles_survive_without_support(GameTestHelper h) {
         BottleBE be=setup(h,bottle(Drink.Kind.SUGAR,Drink.Variant.NORMAL));be.addBottle(bottle(Drink.Kind.FRUIT,Drink.Variant.NORMAL));
         h.setBlock(POS.below(),Blocks.AIR);
-        h.assertTrue(h.getBlockState(POS).isAir(),"Unsupported bottles must be removed");
+        h.assertTrue(h.getBlockState(POS).is(Content.BOTTLE.get()),"Bottles must remain available for Sable assembly without support");
         var drops=h.getLevel().getEntitiesOfClass(ItemEntity.class,new AABB(h.absolutePos(POS)).inflate(1));
-        h.assertTrue(drops.stream().mapToInt(e -> e.getItem().getCount()).sum()==2,"Support loss must drop exactly two bottles");h.succeed();
+        h.assertTrue(drops.isEmpty() && be.getInventory().get(1).getCount()==1,"Removing support must not drop or duplicate bottles");h.succeed();
+    }
+    @GameTest(template="empty",timeoutTicks=20)
+    public static void place_bottle_beside_wall_without_floor(GameTestHelper h) {
+        h.setBlock(POS.west(),Blocks.STONE);h.setBlock(POS.below(),Blocks.AIR);
+        var player=h.makeMockPlayer(GameType.SURVIVAL);player.setShiftKeyDown(true);
+        var stack=bottle(Drink.Kind.GRAIN,Drink.Variant.NORMAL);player.setItemInHand(InteractionHand.MAIN_HAND,stack);
+        var wall=h.absolutePos(POS.west());
+        ((MoonshineItem)stack.getItem()).useOn(new UseOnContext(player,InteractionHand.MAIN_HAND,new BlockHitResult(Vec3.atCenterOf(wall).add(.5,0,0),Direction.EAST,wall,false)));
+        h.assertTrue(h.getBlockState(POS).is(Content.BOTTLE.get()) && stack.isEmpty(),"Bottles must be placeable beside walls without a floor");h.succeed();
     }
     @GameTest(template="empty",timeoutTicks=20)
     public static void pickle_is_food_and_lowers_one_level(GameTestHelper h) {
@@ -130,6 +139,29 @@ public final class BottleTests {
         ((MoonshineItem)stack.getItem()).useOn(new UseOnContext(creative,InteractionHand.MAIN_HAND,new BlockHitResult(Vec3.atCenterOf(pos),Direction.UP,pos,false)));
         h.assertTrue(stack.getCount()==1 && h.getBlockState(POS).getValue(BottleBlock.COUNT)==2,"Creative placement must not consume bottles");
         h.succeed();
+    }
+    @GameTest(template="empty",timeoutTicks=20)
+    public static void grain_courage_and_herbs(GameTestHelper h) {
+        var player=h.makeMockPlayer(GameType.SURVIVAL);
+        float attack=(float)player.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE);
+        var stack=bottle(Drink.Kind.GRAIN,Drink.Variant.STRONG);
+        stack.finishUsingItem(h.getLevel(),player);
+        h.assertTrue(player.hasEffect(Content.COURAGE) && player.getEffect(Content.COURAGE).getAmplifier()==1,"Grain drink must grant courage II");
+        h.assertTrue(player.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE)==attack+6,"Courage strength incorrect");
+        h.assertTrue(player.getAbsorptionAmount()==8,"Courage II must grant four absorption hearts");
+        var speed=new net.neoforged.neoforge.event.entity.player.PlayerEvent.BreakSpeed(player,Blocks.STONE.defaultBlockState(),10,POS);
+        CourageEffect.mining(speed);h.assertTrue(Math.abs(speed.getNewSpeed()-14)<.001,"Courage II haste incorrect");
+        player.removeEffect(Content.COURAGE);
+        h.assertTrue(player.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE)==attack && player.getAbsorptionAmount()==0,"Courage attributes must be removed cleanly");
+        h.setBlock(POS,Content.DRY.get());DryBE dry=h.getBlockEntity(POS);
+        h.assertTrue(!dry.items.isItemValid(0,new ItemStack(Items.REDSTONE)) && !dry.items.isItemValid(0,new ItemStack(Items.GLOWSTONE_DUST)),"Mineral modifiers must be rejected");
+        dry.items.setStackInSlot(0,new ItemStack(Herbs.ribwort()));h.assertTrue(dry.variant()==Drink.Variant.LONG,"Ribwort must extend duration");
+        dry.items.setStackInSlot(0,new ItemStack(Herbs.nettle()));h.assertTrue(dry.variant()==Drink.Variant.STRONG,"Nettle must strengthen effects");h.succeed();
+    }
+    @GameTest(template="empty",timeoutTicks=200)
+    public static void optional_sable_physical_drop(GameTestHelper h) {
+        if(!net.neoforged.fml.ModList.get().isLoaded("sable")) { h.succeed();return; }
+        SableDropCheck.run(h);
     }
     @GameTest(template="empty",timeoutTicks=20)
     public static void pickle_floor_and_other_effects(GameTestHelper h) {

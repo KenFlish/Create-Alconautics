@@ -84,7 +84,7 @@ public final class VisualCheck {
             if(ticks==305) Screenshot.grab(mc.gameDirectory,"alconautics-0.1.5-dry-chamber.png",mc.getMainRenderTarget(),message -> System.out.println("ALCONAUTICS_PONDER_CHECK: "+message.getString()));
             if(ticks==355) {
                 var scene=ui.getActiveScene();
-                if(!(scene.getWorld().getBlockEntity(new net.minecraft.core.BlockPos(1,4,3)) instanceof DryBE d) || !d.items.getStackInSlot(0).is(net.minecraft.world.item.Items.GLOWSTONE_DUST)) throw new IllegalStateException("Ponder dry chamber demonstration failed");
+                if(!(scene.getWorld().getBlockEntity(new net.minecraft.core.BlockPos(1,4,3)) instanceof DryBE d) || !d.items.getStackInSlot(0).is(Herbs.nettle())) throw new IllegalStateException("Ponder dry chamber demonstration failed");
                 System.out.println("ALCONAUTICS_PONDER_CHECK: "+scene.getTitle()+"; duration="+scene.getTotalTime());
             }
             if(ticks==380) mc.setScreen(new DetailsPreview());

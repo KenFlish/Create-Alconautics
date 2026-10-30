@@ -1,19 +1,15 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    " C ",
-    "CPC",
-    " B "
+    "P",
+    "C"
   ],
   "key": {
-    "C": {
-      "item": "create:copper_sheet"
-    },
     "P": {
-      "item": "create:mechanical_pump"
+      "item": "create:fluid_pipe"
     },
-    "B": {
-      "item": "create:brass_casing"
+    "C": {
+      "item": "minecraft:compass"
     }
   },
   "result": {

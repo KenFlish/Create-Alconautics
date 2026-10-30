@@ -10,6 +10,8 @@ The Create boiler gauge models are rendered directly from installed Create, with
 
 Dependency JARs in `libs/` are only development inputs and are not embedded in the distributable JAR.
 
+The optional Sable integration uses its collision callback API. Sable and its companion/Veil/physics libraries are compile-time inputs and are not redistributed in this mod. The High Spirits effect references the installed vanilla Strength icon through an atlas alias; no Minecraft texture bytes are copied.
+
 The two Ponder structures were supplied by the user (`ponder1_1.nbt` and `ponder2.nbt`). Original files are retained in `art/source`; the packaged scene copies remove saved block-entity world coordinates and owner identifiers. Tutorial scripts add the preparation steps while preserving the supplied layouts.
 
 The growth/shrinking effect icons were supplied by the user as `+.png` and `-.png` and are retained unchanged as `art/source/growth_icon.png` and `shrinking_icon.png`.

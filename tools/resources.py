@@ -8,7 +8,7 @@ def write(path,data):
 
 names={'golovka':'distillation_head','holodilnik':'condenser_base','suxharnik':'dry_chamber','samogon':'moonshine_bottle_single','2samodona':'moonshine_bottle_pair'}
 references={'engine.png':'create:block/engine','basin.png':'create:block/basin','roller_metal.png':'create:block/roller_metal','framed_glass.png':'create:block/palettes/framed_glass','item_drain_top.png':'create:block/item_drain_top','fan_blades.png':'create:block/fan_blades','velocity_sensor_2.png':'minecraft:block/copper_block'}
-create_assets=zipfile.ZipFile(R.parents[2]/'libs/create-1.21.1-6.0.9.jar')
+create_assets=zipfile.ZipFile(R.parents[2]/'libs/create-1.21.1-6.0.10.jar')
 display={'gui':{'rotation':[30,225,0],'translation':[0,0,0],'scale':[.65,.65,.65]},'ground':{'translation':[0,3,0],'scale':[.5,.5,.5]},'fixed':{'scale':[.6,.6,.6]},'thirdperson_righthand':{'rotation':[75,45,0],'translation':[0,2.5,0],'scale':[.375,.375,.375]},'firstperson_righthand':{'rotation':[0,45,0],'translation':[0,0,0],'scale':[.5,.5,.5]}}
 def rotate(point,angles,origin):
     p=[point[i]-origin[i] for i in range(3)]
@@ -80,10 +80,10 @@ for src,dst in names.items():
         write(f'assets/alconautics/models/item/{dst}.json',{'parent':f'alconautics:block/{dst}'})
         write(f'data/alconautics/loot_table/blocks/{dst}.json',{'type':'minecraft:block','pools':[{'rolls':1,'entries':[{'type':'minecraft:item','name':'alconautics:'+dst}],'conditions':[{'condition':'minecraft:survives_explosion'}]}]})
 
-drinks=[(k,v) for k in ['sugar','fruit','vegetable'] for v in (['','_long','_strong'] if k!='vegetable' else [''])]
+drinks=[(k,v) for k in ['sugar','fruit','vegetable','grain'] for v in (['','_long','_strong'] if k!='vegetable' else [''])]
 (R/'assets/alconautics/textures/item').mkdir(parents=True,exist_ok=True)
 shutil.copy2(R.parents[2]/'art/source/moonshine.png',R/'assets/alconautics/textures/item/moonshine.png')
-write('assets/alconautics/blockstates/moonshine_bottle.json',{'variants':{f'drink={i}':{'model':'alconautics:block/moonshine_bottle'} for i in range(7)}})
+write('assets/alconautics/blockstates/moonshine_bottle.json',{'variants':{f'drink={i}':{'model':'alconautics:block/moonshine_bottle'} for i in range(10)}})
 write('assets/alconautics/models/block/moonshine_bottle.json',{'textures':{'particle':'alconautics:block/moonshine_bottle_single_0'},'elements':[]})
 # Collision bounds use transformed corners, including the pair's arbitrary Y rotations.
 variants=[]
@@ -122,12 +122,12 @@ for kind,var in drinks:
     write(f'assets/alconautics/models/item/{name}.json',{'parent':'minecraft:item/generated','textures':{'layer0':'alconautics:item/moonshine'}})
     write(f'data/alconautics/recipe/filling/{name}.json',{'type':'create:filling','ingredients':[{'item':'minecraft:glass_bottle'},{'type':'neoforge:single','fluid':'alconautics:'+name,'amount':250}],'results':[{'id':'alconautics:'+name}]})
     write(f'data/alconautics/recipe/emptying/{name}.json',{'type':'create:emptying','ingredients':[{'item':'alconautics:'+name}],'results':[{'id':'minecraft:glass_bottle'},{'id':'alconautics:'+name,'amount':250}]})
-for kind,ingredient in [('sugar','minecraft:sugar'),('fruit','#alconautics:fruits'),('vegetable','#alconautics:vegetables')]:
+for kind,ingredient in [('sugar','minecraft:sugar'),('fruit','#alconautics:fruits'),('vegetable','#alconautics:vegetables'),('grain','minecraft:wheat')]:
     ing={'tag':ingredient[1:]} if ingredient.startswith('#') else {'item':ingredient}
     write(f'data/alconautics/recipe/mixing/{kind}_mash.json',{'type':'create:mixing','ingredients':[{'type':'neoforge:single','fluid':'minecraft:water','amount':1000},{'item':'farm_and_charm:yeast'}]+[ing]*4,'results':[{'id':f'alconautics:{kind}_mash','amount':1000}]})
 for tag,items in [('fruits',['minecraft:apple']),('vegetables',['minecraft:potato','minecraft:carrot','minecraft:beetroot'])]:
     write(f'data/alconautics/tags/item/{tag}.json',{'replace':False,'values':items})
-for name,pattern,key in [('distillation_head',[' C ','CPC',' B '],{'C':'create:copper_sheet','P':'create:mechanical_pump','B':'create:brass_casing'}),('condenser_base',[' C ','IPI',' B '],{'C':'create:fluid_pipe','I':'create:iron_sheet','P':'create:basin','B':'create:copper_sheet'}),('dry_chamber',[' P ','CBC'],{'P':'create:fluid_pipe','C':'create:copper_sheet','B':'minecraft:glass_bottle'})]:
+for name,pattern,key in [('distillation_head',['P','C'],{'P':'create:fluid_pipe','C':'minecraft:compass'}),('condenser_base',[' C ','IPI',' B '],{'C':'create:fluid_pipe','I':'create:iron_sheet','P':'create:basin','B':'create:copper_sheet'}),('dry_chamber',[' P ','CBC'],{'P':'create:fluid_pipe','C':'create:copper_sheet','B':'minecraft:glass_bottle'})]:
     write(f'data/alconautics/recipe/crafting/{name}.json',{'type':'minecraft:crafting_shaped','pattern':pattern,'key':{k:{'item':v} for k,v in key.items()},'result':{'id':'alconautics:'+name,'count':1}})
 
 ru={'itemGroup.alconautics':'Create: Alconautics','block.alconautics.distillation_head':'Перегонная головка','block.alconautics.condenser_base':'Основаніе холодильника','block.alconautics.dry_chamber':'Сухопарникъ','block.alconautics.moonshine_bottle':'Бутылка самогона','effect.alconautics.growth':'Великанъ','effect.alconautics.shrinking':'Лилипутъ',
@@ -138,14 +138,14 @@ en={'itemGroup.alconautics':'Create: Alconautics','block.alconautics.distillatio
 statuses={'empty':('Нѣтъ браги','No mash'),'wrong_fluid':('Неподходящая жидкость','Wrong fluid'),'heat':('Нѣтъ нагрѣва','No heat'),'running':('Работаетъ','Running'),'no_whistle':('Нѣтъ свистка — опасность!','No whistle — danger!'),'tank':('Нѣтъ бака','No tank'),'heads':('Лишняя головка','Multiple heads'),'route':('Провѣрьте трубы','Check pipe route'),'branch':('Развѣтвленіе трубы','Branched pipe route'),'dry_count':('Лишній сухопарникъ','Multiple dry chambers'),'wet_pipes':('Нужны двѣ трубы въ водѣ','Needs two waterlogged pipes'),'range':('Слишкомъ длинная труба','Pipe route too long'),'cold':('Нѣтъ холода','No coolant'),'output':('Выходъ заполненъ','Output full or different drink'),'buffer':('Ожиданіе передачи пара','Waiting for vapour transfer'),'engine':('Снимите паровой двигатель','Remove steam engine')}
 for key,(r,e) in statuses.items():ru['status.alconautics.'+key]=r;en['status.alconautics.'+key]=e
 for kind,var in drinks:
-    ident=kind+'_moonshine'+var;rn={'sugar':'Сахарный','fruit':'Фруктовый','vegetable':'Овощной'}[kind]+' самогонъ'+{'':'','_long':' (долгій)','_strong':' (крѣпкій)'}[var]
+    ident=kind+'_moonshine'+var;rn={'sugar':'Сахарный','fruit':'Фруктовый','vegetable':'Овощной','grain':'Зерновой'}[kind]+' самогонъ'+{'':'','_long':' (долгій)','_strong':' (крѣпкій)'}[var]
     english=kind.title()+' Moonshine'+{'':'','_long':' (Extended)','_strong':' (Strong)'}[var]
     ru['item.alconautics.'+ident]='Самогонъ';en['item.alconautics.'+ident]='Moonshine'
     for suffix in ['','_vapour']:
         ru['fluid.alconautics.'+ident+suffix]=('Паръ: ' if suffix else '')+rn
         en['fluid.alconautics.'+ident+suffix]=english+(' Vapour' if suffix else '')
-for kind in ['sugar','fruit','vegetable']:
-    ru['fluid.alconautics.'+kind+'_mash']={'sugar':'Сахарная','fruit':'Фруктовая','vegetable':'Овощная'}[kind]+' брага'
+for kind in ['sugar','fruit','vegetable','grain']:
+    ru['fluid.alconautics.'+kind+'_mash']={'sugar':'Сахарная','fruit':'Фруктовая','vegetable':'Овощная','grain':'Зерновая'}[kind]+' брага'
     en['fluid.alconautics.'+kind+'_mash']=kind.title()+' Mash'
 ru.update({'tooltip.alconautics.mash':'Брага','tooltip.alconautics.mash_dots':'........ ','tooltip.alconautics.heat':'Нагрѣвъ','tooltip.alconautics.heat_dots':'....... ','tooltip.alconautics.cooler_running':'Статусъ холодильника: Работаетъ','tooltip.alconautics.cooler_idle':'Статусъ холодильника: Не работаетъ'})
 ru.update({'tooltip.alconautics.drink_type':'Типъ: %s','drink_kind.alconautics.sugar':'Сахарный','drink_kind.alconautics.fruit':'Фруктовый','drink_kind.alconautics.vegetable':'Овощной'})
@@ -162,12 +162,16 @@ write('assets/alconautics/lang/en_us.json',en)
 # tooltip, just like vanilla/Create potions, rather than the liquid's name.
 for kind,var in drinks:
     for suffix in ['', '_vapour']:
-        ru['fluid.alconautics.'+kind+'_moonshine'+var+suffix]=('Паръ: ' if suffix else '')+{'sugar':'Сахарный','fruit':'Фруктовый','vegetable':'Овощной'}[kind]+' самогонъ'
+        ru['fluid.alconautics.'+kind+'_moonshine'+var+suffix]=('Паръ: ' if suffix else '')+{'sugar':'Сахарный','fruit':'Фруктовый','vegetable':'Овощной','grain':'Зерновой'}[kind]+' самогонъ'
         en['fluid.alconautics.'+kind+'_moonshine'+var+suffix]=kind.title()+' Moonshine'+(' Vapour' if suffix else '')
 ru.update({'block.alconautics.condenser_base':'Конденсаторъ','tooltip.alconautics.cooler':'Конденсаторъ',
     'tooltip.alconautics.cooler_running':'Статусъ конденсатора: Работаетъ','tooltip.alconautics.cooler_idle':'Статусъ конденсатора: Не работаетъ',
     'tooltip.alconautics.status_header':'Статусъ перегоннаго аппарата','tooltip.alconautics.kind_label':'Типъ: ',
     })
+ru.update({'effect.alconautics.courage':'Куражъ','drink_kind.alconautics.grain':'Зерновой','kind.alconautics.grain':'Зерновая',
+    'modifier.alconautics.long':'Подорожникъ — дольше','modifier.alconautics.strong':'Крапива — сильнѣе'})
+en.update({'effect.alconautics.courage':'High Spirits','drink_kind.alconautics.grain':'Grain','kind.alconautics.grain':'Grain',
+    'modifier.alconautics.long':'Ribwort — longer','modifier.alconautics.strong':'Nettle — stronger'})
 ru['block.alconautics.moonshine_bottle']='Бутылочка самогона'
 ru['tooltip.alconautics.sea_pickle']='Снижаетъ опьянѣніе на одну ступень, но не ниже I уровня'
 en['block.alconautics.moonshine_bottle']='Moonshine Bottle'
@@ -181,6 +185,7 @@ en.update({'block.alconautics.condenser_base':'Condenser','tooltip.alconautics.c
 write('assets/alconautics/lang/rpr.json',ru)
 write('assets/alconautics/lang/ru_ru.json',{k:modern(v) for k,v in ru.items()})
 write('assets/alconautics/lang/en_us.json',en)
+write('assets/minecraft/atlases/mob_effects.json',{'sources':[{'type':'minecraft:single','resource':'minecraft:mob_effect/strength','sprite':'alconautics:courage'}]})
 for effect,source in [('growth','growth_icon.png'),('shrinking','shrinking_icon.png')]:
     folder=R/'assets/alconautics/textures/mob_effect';folder.mkdir(parents=True,exist_ok=True)
     shutil.copy2(R.parents[2]/'art/source'/source,folder/f'{effect}.png')

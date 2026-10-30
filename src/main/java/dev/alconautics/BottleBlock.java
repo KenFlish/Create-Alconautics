@@ -14,9 +14,9 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.*;
 import net.minecraft.world.phys.shapes.*;
 
-public final class BottleBlock extends Block implements EntityBlock {
+public class BottleBlock extends Block implements EntityBlock {
     /** Retained to migrate bottles placed by releases up to 0.1.5. */
-    public static final IntegerProperty DRINK=IntegerProperty.create("drink",0,6);
+    public static final IntegerProperty DRINK=IntegerProperty.create("drink",0,9);
     public static final IntegerProperty COUNT=IntegerProperty.create("bottles",1,2);
     public static final DirectionProperty FACING=BlockStateProperties.HORIZONTAL_FACING;
     public BottleBlock(Properties props) { super(props);registerDefaultState(stateDefinition.any().setValue(DRINK,0).setValue(COUNT,1).setValue(FACING,Direction.NORTH)); }
@@ -31,9 +31,9 @@ public final class BottleBlock extends Block implements EntityBlock {
         return Content.DRINKS.get(Drink.ALL.get(s.getValue(DRINK))).get().getDefaultInstance();
     }
     @Override protected VoxelShape getShape(BlockState s,BlockGetter l,BlockPos p,CollisionContext c) { return BottleShapes.get(s.getValue(COUNT),s.getValue(FACING)); }
-    @Override protected boolean canSurvive(BlockState s,LevelReader l,BlockPos p) { return l.getBlockState(p.below()).isFaceSturdy(l,p.below(),Direction.UP); }
+    @Override protected boolean canSurvive(BlockState s,LevelReader l,BlockPos p) { return true; }
     @Override protected BlockState updateShape(BlockState s,Direction d,BlockState other,LevelAccessor l,BlockPos p,BlockPos q) {
-        return d==Direction.DOWN && !s.canSurvive(l,p)?Blocks.AIR.defaultBlockState():super.updateShape(s,d,other,l,p,q);
+        return super.updateShape(s,d,other,l,p,q);
     }
     public static boolean mayUse(Level level,BlockPos pos,Player player,Direction face,ItemStack stack) {
         return level.mayInteract(player,pos) && player.mayUseItemAt(pos,face,stack);
@@ -43,7 +43,7 @@ public final class BottleBlock extends Block implements EntityBlock {
         if(!mayUse(l,pos,p,hit.getDirection(),stack)) return ItemInteractionResult.FAIL;
         if(l.getBlockEntity(pos) instanceof BottleBE bottles && !l.isClientSide && bottles.addBottle(stack)) {
             if(!p.isCreative()) stack.shrink(1);
-            l.playSound(null,pos,net.minecraft.sounds.SoundEvents.GLASS_PLACE,net.minecraft.sounds.SoundSource.BLOCKS,.6f,1.15f);
+            placedSound(l,pos);
         }
         return ItemInteractionResult.sidedSuccess(l.isClientSide);
     }
@@ -53,9 +53,12 @@ public final class BottleBlock extends Block implements EntityBlock {
         if(!l.isClientSide && l.getBlockEntity(pos) instanceof BottleBE bottles) {
             ItemStack result=bottles.takeBottle(selectedSlot(s,pos,hit.getLocation()));
             if(!result.isEmpty() && !p.addItem(result)) p.drop(result,false);
-            l.playSound(null,pos,net.minecraft.sounds.SoundEvents.GLASS_PLACE,net.minecraft.sounds.SoundSource.BLOCKS,.5f,.9f);
+            l.playSound(null,pos,net.minecraft.sounds.SoundEvents.BOTTLE_EMPTY,net.minecraft.sounds.SoundSource.BLOCKS,1,1);
         }
         return InteractionResult.sidedSuccess(l.isClientSide);
+    }
+    public static void placedSound(Level level,BlockPos pos) {
+        level.playSound(null,pos,net.minecraft.sounds.SoundEvents.BOTTLE_FILL,net.minecraft.sounds.SoundSource.BLOCKS,1,1);
     }
     public static int selectedSlot(BlockState state,BlockPos pos,Vec3 hit) {
         if(state.getValue(COUNT)==1) return 0;

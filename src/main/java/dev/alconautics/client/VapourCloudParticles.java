@@ -1,6 +1,7 @@
 package dev.alconautics.client;
 
 import dev.alconautics.Alconautics;
+import dev.alconautics.VapourCloud;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.AreaEffectCloud;
@@ -15,7 +16,7 @@ public final class VapourCloudParticles {
         var level=Minecraft.getInstance().level;
         if(level==null || level.getGameTime()%3!=0) return;
         for(var entity:level.entitiesForRendering()) {
-            if(!(entity instanceof AreaEffectCloud cloud) || cloud.getCustomName()==null || !cloud.getCustomName().getString().equals("alconautics:rupture_cloud")) continue;
+            if(!(entity instanceof AreaEffectCloud cloud) || !VapourCloud.isOurs(cloud)) continue;
             for(int i=0;i<5;i++) {
                 double x=level.random.nextDouble()*2-1,y=level.random.nextDouble()*2-1,z=level.random.nextDouble()*2-1;
                 if(x*x+y*y+z*z>1) continue;

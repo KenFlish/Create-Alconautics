@@ -67,6 +67,8 @@ public final class BottleClientCheck {
             require(bottles.getInventory().get(1).getItem() instanceof MoonshineItem item && item.drink.kind()==Drink.Kind.FRUIT,"Second slot packet missing");
             require(bottles.getWobbleStart(1)>0,"Foundation placement wobble did not start");
             require(mc.level.getGameTime()-bottles.getWobbleStart(1)<20,"Stale wobble timestamp");
+            require(net.satisfy.foundation.client.render.WobbleAnimation.isActive(mc.level,bottles.getWobbleStart()),"Shared wobble for both bottles missing");
+            screenshot("wobble");
             System.out.println("ALCONAUTICS_BOTTLE_CHECK: live second-slot packet and native wobble received");
         }
         if(ticks==140) {
@@ -75,6 +77,7 @@ public final class BottleClientCheck {
             var create=com.simibubi.create.AllCreativeModeTabs.BASE_CREATIVE_TAB.get();
             var brewery=net.satisfy.brewery.core.registry.TabRegistry.BREWERY_TAB.get();
             net.minecraft.world.item.CreativeModeTabs.tryRebuildTabContents(mc.level.enabledFeatures(),true,mc.level.registryAccess());
+            require(mc.getMobEffectTextures().get(Content.COURAGE).contents().name().toString().equals("alconautics:courage"),"Courage effect icon missing");
             require(create.contains(Content.HEAD_ITEM.get().getDefaultInstance()) && create.contains(Content.DRY_ITEM.get().getDefaultInstance()),"Machines missing from Create tab");
             Content.DRINKS.forEach((drink,item) -> require(brewery.contains(item.get().getDefaultInstance())==(drink.variant()==Drink.Variant.NORMAL),"Wrong Brewery drink tab entry: "+drink));
             screenshot("pair");
@@ -87,10 +90,18 @@ public final class BottleClientCheck {
             screenshot("remaining");
             System.out.println("ALCONAUTICS_BOTTLE_CHECK: single/pair/remaining models, inventory packets, overlay and creative tabs passed");
         }
-        if(ticks==210) mc.stop();
+        if(ticks==200) mc.getSingleplayerServer().execute(() -> ((BottleBE)mc.getSingleplayerServer().overworld().getBlockEntity(POS)).addBottle(Content.DRINKS.get(new Drink(Drink.Kind.FRUIT,Drink.Variant.NORMAL)).get().getDefaultInstance()));
+        if(ticks==225) {
+            var hit=new BlockHitResult(Vec3.atCenterOf(POS),Direction.SOUTH,POS,false);
+            require(new BottleInfo().describe(mc.level,POS,mc.level.getBlockState(POS),hit).getFirst().rows().size()==2,"Identical drinks must show two separate bottle rows");
+            screenshot("identical");
+            mc.getSingleplayerServer().execute(() -> VapourCloud.spawn(mc.getSingleplayerServer().overworld(),Vec3.atCenterOf(POS).add(0,1,0),1.4f,120));
+        }
+        if(ticks==265) screenshot("cloud");
+        if(ticks==285) mc.stop();
     }
     private static void screenshot(String name) {
         var mc=Minecraft.getInstance();
-        Screenshot.grab(mc.gameDirectory,"alconautics-0.1.6-"+name+".png",mc.getMainRenderTarget(),message -> System.out.println("ALCONAUTICS_BOTTLE_CHECK: "+message.getString()));
+        Screenshot.grab(mc.gameDirectory,"alconautics-0.1.7-"+name+".png",mc.getMainRenderTarget(),message -> System.out.println("ALCONAUTICS_BOTTLE_CHECK: "+message.getString()));
     }
 }

@@ -3,7 +3,7 @@ package dev.alconautics;
 import java.util.List;
 
 public record Drink(Kind kind, Variant variant) {
-    public enum Kind { SUGAR, FRUIT, VEGETABLE;
+    public enum Kind { SUGAR, FRUIT, VEGETABLE, GRAIN;
         public String id() { return name().toLowerCase(java.util.Locale.ROOT); }
     }
     public enum Variant { NORMAL, LONG, STRONG;
@@ -15,5 +15,6 @@ public record Drink(Kind kind, Variant variant) {
     public static final List<Drink> ALL = List.of(
         new Drink(Kind.SUGAR, Variant.NORMAL), new Drink(Kind.SUGAR, Variant.LONG), new Drink(Kind.SUGAR, Variant.STRONG),
         new Drink(Kind.FRUIT, Variant.NORMAL), new Drink(Kind.FRUIT, Variant.LONG), new Drink(Kind.FRUIT, Variant.STRONG),
-        new Drink(Kind.VEGETABLE, Variant.NORMAL));
+        new Drink(Kind.VEGETABLE, Variant.NORMAL),
+        new Drink(Kind.GRAIN, Variant.NORMAL),new Drink(Kind.GRAIN, Variant.LONG),new Drink(Kind.GRAIN, Variant.STRONG));
 }

@@ -25,7 +25,10 @@ public final class Content {
     public static final DeferredBlock<MachineBlock> HEAD = BLOCKS.register("distillation_head", () -> new MachineBlock(machine(), MachineBlock.Kind.HEAD));
     public static final DeferredBlock<MachineBlock> COOLER = BLOCKS.register("condenser_base", () -> new MachineBlock(machine(), MachineBlock.Kind.COOLER));
     public static final DeferredBlock<MachineBlock> DRY = BLOCKS.register("dry_chamber", () -> new MachineBlock(machine(), MachineBlock.Kind.DRY));
-    public static final DeferredBlock<BottleBlock> BOTTLE = BLOCKS.register("moonshine_bottle", () -> new BottleBlock(BlockBehaviour.Properties.of().strength(.3f).sound(SoundType.GLASS).noOcclusion()));
+    public static final DeferredBlock<BottleBlock> BOTTLE = BLOCKS.register("moonshine_bottle", () -> {
+        var props=BlockBehaviour.Properties.of().strength(.3f).sound(SoundType.GLASS).noOcclusion();
+        return net.neoforged.fml.ModList.get().isLoaded("sable")?dev.alconautics.compat.SableCompat.createBottle(props):new BottleBlock(props);
+    });
     public static final DeferredItem<BlockItem> HEAD_ITEM = ITEMS.registerSimpleBlockItem(HEAD);
     public static final DeferredItem<BlockItem> COOLER_ITEM = ITEMS.registerSimpleBlockItem(COOLER);
     public static final DeferredItem<BlockItem> DRY_ITEM = ITEMS.registerSimpleBlockItem(DRY);
@@ -35,6 +38,7 @@ public final class Content {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DryBE>> DRY_BE = BES.register("dry_chamber", () -> BlockEntityType.Builder.of(DryBE::new, DRY.get()).build(null));
     public static final DeferredHolder<MobEffect, MobEffect> GROW = EFFECTS.register("growth", () -> new MobEffect(MobEffectCategory.BENEFICIAL, 0xe4c277) {});
     public static final DeferredHolder<MobEffect, MobEffect> SHRINK = EFFECTS.register("shrinking", () -> new MobEffect(MobEffectCategory.BENEFICIAL, 0xcc6688) {});
+    public static final DeferredHolder<MobEffect,MobEffect> COURAGE=EFFECTS.register("courage",CourageEffect::new);
     public static final Map<Drink.Kind, FluidSet> MASH = new EnumMap<>(Drink.Kind.class);
     public static final Map<Drink, FluidSet> VAPOUR = new LinkedHashMap<>(), SPIRITS = new LinkedHashMap<>();
     public static final Map<Drink, DeferredItem<MoonshineItem>> DRINKS = new LinkedHashMap<>();

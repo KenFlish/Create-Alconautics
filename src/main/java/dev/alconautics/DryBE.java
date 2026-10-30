@@ -14,14 +14,14 @@ public final class DryBE extends MachineBE {
     private Drink.Variant paidVariant = Drink.Variant.NORMAL;
     private int credit;
     public final ItemStackHandler items = new ItemStackHandler(1) {
-        public boolean isItemValid(int slot,ItemStack s) { return s.is(Items.REDSTONE) || s.is(Items.GLOWSTONE_DUST); }
+        public boolean isItemValid(int slot,ItemStack s) { return s.is(Herbs.ribwort()) || s.is(Herbs.nettle()); }
         protected void onContentsChanged(int slot) { changed(); }
     };
     public DryBE(BlockPos p,BlockState s) { super(Content.DRY_BE.get(),p,s); }
     public Drink.Variant variant() {
         if (credit > 0) return paidVariant;
         var s=items.getStackInSlot(0);
-        return s.is(Items.REDSTONE) ? Drink.Variant.LONG : s.is(Items.GLOWSTONE_DUST) ? Drink.Variant.STRONG : Drink.Variant.NORMAL;
+        return s.is(Herbs.ribwort()) ? Drink.Variant.LONG : s.is(Herbs.nettle()) ? Drink.Variant.STRONG : Drink.Variant.NORMAL;
     }
     public void pay(int amount) {
         if (variant() == Drink.Variant.NORMAL) return;

@@ -11,7 +11,7 @@ public final class DrinkTooltip {
     private DrinkTooltip() {}
     public static void append(Drink drink,Consumer<Component> out,float tickRate) {
         if(drink.kind()==Drink.Kind.VEGETABLE) return;
-        PotionContents.addPotionTooltip(List.of(new MobEffectInstance(drink.kind()==Drink.Kind.SUGAR?Content.GROW:Content.SHRINK,
+        PotionContents.addPotionTooltip(List.of(new MobEffectInstance(drink.kind()==Drink.Kind.SUGAR?Content.GROW:drink.kind()==Drink.Kind.GRAIN?Content.COURAGE:Content.SHRINK,
             drink.variant().ticks(),drink.variant().amplifier())),out,1,tickRate);
     }
 }

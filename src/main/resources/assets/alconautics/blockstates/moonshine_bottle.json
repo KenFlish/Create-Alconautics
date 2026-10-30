@@ -20,6 +20,15 @@
     },
     "drink=6": {
       "model": "alconautics:block/moonshine_bottle"
+    },
+    "drink=7": {
+      "model": "alconautics:block/moonshine_bottle"
+    },
+    "drink=8": {
+      "model": "alconautics:block/moonshine_bottle"
+    },
+    "drink=9": {
+      "model": "alconautics:block/moonshine_bottle"
     }
   }
 }

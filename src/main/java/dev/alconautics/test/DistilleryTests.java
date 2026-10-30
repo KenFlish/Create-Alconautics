@@ -151,7 +151,7 @@ public class DistilleryTests {
     @GameTest(template="empty",timeoutTicks=600)
     public static void dry_chamber_modifier(GameTestHelper h) {
         setup(h,false);h.setBlock(2,3,1,Content.DRY.get());
-        DryBE jar=h.getBlockEntity(new BlockPos(2,3,1)); jar.items.setStackInSlot(0,new ItemStack(Items.GLOWSTONE_DUST));
+        DryBE jar=h.getBlockEntity(new BlockPos(2,3,1)); jar.items.setStackInSlot(0,new ItemStack(Herbs.nettle()));
         h.runAtTickTime(30,() -> h.assertTrue(h.getBlockState(new BlockPos(2,4,1)).getValue(FluidPipeBlock.DOWN),"Pipe must connect visually to dry chamber top"));
         h.runAtTickTime(580,() -> { CoolerBE c=h.getBlockEntity(COOLER); h.assertTrue(new Drink(Drink.Kind.SUGAR,Drink.Variant.STRONG).equals(Content.spirit(c.output.getFluid().getFluid())),"Glowstone modifier lost in transport"); h.assertTrue(jar.items.getStackInSlot(0).isEmpty(),"Modifier not consumed"); h.succeed(); });
     }

@@ -4,9 +4,9 @@ import shutil, zipfile, hashlib, json
 
 root=Path(__file__).resolve().parents[1]
 output=root/'dist';output.mkdir(exist_ok=True)
-jar=root/'build/libs/create-alconautics-0.1.6.jar'
+jar=root/'build/libs/create-alconautics-0.1.7.jar'
 shutil.copy2(jar,output/jar.name)
-archive=output/'create-alconautics-0.1.6-sources.zip'
+archive=output/'create-alconautics-0.1.7-sources.zip'
 with zipfile.ZipFile(archive,'w',zipfile.ZIP_DEFLATED) as z:
     for folder in ('src','art/source','gradle','docs'):
         for p in sorted((root/folder).rglob('*')):

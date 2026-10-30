@@ -1,0 +1,18 @@
+{
+  "type": "create:filling",
+  "ingredients": [
+    {
+      "item": "minecraft:glass_bottle"
+    },
+    {
+      "type": "neoforge:single",
+      "fluid": "alconautics:grain_moonshine_long",
+      "amount": 250
+    }
+  ],
+  "results": [
+    {
+      "id": "alconautics:grain_moonshine_long"
+    }
+  ]
+}

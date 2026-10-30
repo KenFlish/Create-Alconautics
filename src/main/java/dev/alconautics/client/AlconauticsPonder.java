@@ -97,15 +97,17 @@ public final class AlconauticsPonder implements PonderPlugin {
         text(s,u,"Fruit makes fruit mash. Add four fruits, such as apples.",1,2,1);
         fill(s,u,1,2,1,Drink.Kind.VEGETABLE);item(s,u,new ItemStack(Items.POTATO),1,2,1);
         text(s,u,"Vegetables make vegetable mash. Add four vegetables: potatoes, carrots or beetroot.",1,2,1);
+        fill(s,u,1,2,1,Drink.Kind.GRAIN);item(s,u,new ItemStack(Items.WHEAT),1,2,1);
+        text(s,u,"Use four portions of wheat to make grain mash.",1,2,1);
         s.addKeyframe();s.world().showSection(u.select().position(1,4,3),Direction.UP);s.idle(15);
         text(s,u,"Attach a Dry Chamber underneath a pipe between the head and the condenser. It is an optional modifier, not a separate pipe route.",1,4,3);
-        item(s,u,new ItemStack(Items.REDSTONE),1,4,3);
-        s.world().modifyBlockEntity(new BlockPos(1,4,3),DryBE.class,d -> d.items.setStackInSlot(0,new ItemStack(Items.REDSTONE)));
-        text(s,u,"Redstone extends the duration of a drink’s positive effect.",1,4,3);
-        s.addKeyframe();item(s,u,new ItemStack(Items.GLOWSTONE_DUST),1,4,3);
-        s.world().modifyBlockEntity(new BlockPos(1,4,3),DryBE.class,d -> d.items.setStackInSlot(0,new ItemStack(Items.GLOWSTONE_DUST)));
-        text(s,u,"Glowstone dust grants effect level II for 90 seconds. Choose duration or strength; these modifiers do not stack.",1,4,3);
-        text(s,u,"One dust treats 1000 mB. Vegetable moonshine has no positive effect to enhance and does not consume the modifier.",1,4,3);
+        item(s,u,new ItemStack(Herbs.ribwort()),1,4,3);
+        s.world().modifyBlockEntity(new BlockPos(1,4,3),DryBE.class,d -> d.items.setStackInSlot(0,new ItemStack(Herbs.ribwort())));
+        text(s,u,"Ribwort extends the duration of a drink’s positive effect.",1,4,3);
+        s.addKeyframe();item(s,u,new ItemStack(Herbs.nettle()),1,4,3);
+        s.world().modifyBlockEntity(new BlockPos(1,4,3),DryBE.class,d -> d.items.setStackInSlot(0,new ItemStack(Herbs.nettle())));
+        text(s,u,"Nettle grants effect level II for 90 seconds. Choose duration or strength; these modifiers do not stack.",1,4,3);
+        text(s,u,"One herb treats 1000 mB. Vegetable moonshine has no positive effect to enhance and does not consume the modifier.",1,4,3);
         s.markAsFinished();
     }
 }

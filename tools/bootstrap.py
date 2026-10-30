@@ -14,7 +14,7 @@ def fetch(url, dest):
 for name in ('gradlew', 'gradlew.bat', 'gradle/wrapper/gradle-wrapper.jar', 'gradle/wrapper/gradle-wrapper.properties'):
     fetch('https://raw.githubusercontent.com/NeoForgeMDKs/MDK-1.21.1-ModDevGradle/main/' + name, name)
 
-local_create = ROOT/'libs/create-1.21.1-6.0.9.jar'
+local_create = ROOT/'libs/create-1.21.1-6.0.10.jar'
 (ROOT/'libs').mkdir(exist_ok=True)
 if not local_create.exists():
     query=urllib.parse.urlencode({'game_versions':json.dumps(['1.21.1']),'loaders':json.dumps(['neoforge'])})
@@ -60,3 +60,17 @@ for name in ('golovka','holodilnik','suxharnik','samogon','2samodona'):
     target.parent.mkdir(parents=True, exist_ok=True)
     if not target.exists():
         raise FileNotFoundError('Missing checked-in artwork: '+str(target))
+
+# Compile-only optional integration. Sable and its libraries are never bundled.
+sable=ROOT/'libs/compile/sable-neoforge-1.21.1-2.0.6.jar'
+if not sable.exists():
+    request=urllib.request.Request('https://api.modrinth.com/v2/project/sable/version',headers={'User-Agent':'Alconautics-Development/0.1'})
+    versions=json.loads(urllib.request.urlopen(request,timeout=60).read())
+    file=next(f for v in versions for f in v['files'] if f['filename']==sable.name)
+    fetch(file['url'],'libs/compile/'+sable.name)
+    if hashlib.sha512(sable.read_bytes()).hexdigest()!=file['hashes']['sha512']:
+        raise RuntimeError('Sable dependency hash mismatch')
+with zipfile.ZipFile(sable) as z:
+    for name in z.namelist():
+        if name.startswith('META-INF/jarjar/') and name.endswith('.jar'):
+            (ROOT/'libs/compile'/Path(name).name).write_bytes(z.read(name))

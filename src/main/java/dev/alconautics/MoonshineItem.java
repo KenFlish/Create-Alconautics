@@ -21,9 +21,8 @@ public final class MoonshineItem extends Item {
     @Override public ItemStack finishUsingItem(ItemStack stack,Level level,LivingEntity entity) {
         if (!level.isClientSide) {
             if(drink.kind()!=Drink.Kind.VEGETABLE) {
-                var effect=drink.kind()==Drink.Kind.SUGAR?Content.GROW:Content.SHRINK;
-                var opposite=drink.kind()==Drink.Kind.SUGAR?Content.SHRINK:Content.GROW;
-                entity.removeEffect(opposite);
+                var effect=drink.kind()==Drink.Kind.SUGAR?Content.GROW:drink.kind()==Drink.Kind.GRAIN?Content.COURAGE:Content.SHRINK;
+                if(drink.kind()!=Drink.Kind.GRAIN) entity.removeEffect(drink.kind()==Drink.Kind.SUGAR?Content.SHRINK:Content.GROW);
                 var current=entity.getEffect(effect);
                 if(current==null || current.getAmplifier()<=drink.variant().amplifier()) entity.addEffect(new MobEffectInstance(effect,drink.variant().ticks(),drink.variant().amplifier()));
             }
@@ -40,15 +39,17 @@ public final class MoonshineItem extends Item {
         if(p!=null && ctx.getLevel().getBlockState(ctx.getClickedPos()).is(Content.BOTTLE.get())) {
             var level=ctx.getLevel();var pos=ctx.getClickedPos();
             if(!BottleBlock.mayUse(level,pos,p,ctx.getClickedFace(),ctx.getItemInHand())) return InteractionResult.FAIL;
-            if(!level.isClientSide && level.getBlockEntity(pos) instanceof BottleBE bottles && bottles.addBottle(ctx.getItemInHand()) && !p.isCreative()) ctx.getItemInHand().shrink(1);
+            if(!level.isClientSide && level.getBlockEntity(pos) instanceof BottleBE bottles && bottles.addBottle(ctx.getItemInHand())) {
+                if(!p.isCreative()) ctx.getItemInHand().shrink(1);BottleBlock.placedSound(level,pos);
+            }
             return InteractionResult.sidedSuccess(level.isClientSide);
         }
-        if(p==null || !p.isShiftKeyDown() || ctx.getClickedFace()!=Direction.UP) return InteractionResult.PASS;
-        var pos=ctx.getClickedPos().above(); var level=ctx.getLevel();
-        if(!level.mayInteract(p,pos) || !p.mayUseItemAt(pos,Direction.UP,ctx.getItemInHand()) || !level.getBlockState(pos).canBeReplaced()) return InteractionResult.FAIL;
+        if(p==null || !p.isShiftKeyDown()) return InteractionResult.PASS;
+        var pos=ctx.getClickedPos().relative(ctx.getClickedFace()); var level=ctx.getLevel();
+        if(!level.mayInteract(p,pos) || !p.mayUseItemAt(pos,ctx.getClickedFace(),ctx.getItemInHand()) || !level.getBlockState(pos).canBeReplaced()) return InteractionResult.FAIL;
         BlockState state=Content.BOTTLE.get().defaultBlockState().setValue(BottleBlock.DRINK,Drink.ALL.indexOf(drink)).setValue(BottleBlock.FACING,p.getDirection().getOpposite());
         if(!state.canSurvive(level,pos)) return InteractionResult.FAIL;
-        if(!level.isClientSide) { level.setBlockAndUpdate(pos,state); if(level.getBlockEntity(pos) instanceof BottleBE bottles) bottles.placeFirst(ctx.getItemInHand()); if(!p.isCreative()) ctx.getItemInHand().shrink(1); }
+        if(!level.isClientSide) { level.setBlockAndUpdate(pos,state); if(level.getBlockEntity(pos) instanceof BottleBE bottles) bottles.placeFirst(ctx.getItemInHand()); if(!p.isCreative()) ctx.getItemInHand().shrink(1);BottleBlock.placedSound(level,pos); }
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
     @Override public void appendHoverText(ItemStack stack,TooltipContext ctx,List<Component> out,TooltipFlag flag) {

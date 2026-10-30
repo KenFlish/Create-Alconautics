@@ -147,13 +147,7 @@ public final class HeadBE extends MachineBE {
                     center.x+x*radius,center.y+y*radius,center.z+z*radius,0,x*.55,y*.55,z*.55,.22);
             }
         }
-        var cloud=new AreaEffectCloud(level,origin.getX()+.5,origin.getY()+1,origin.getZ()+.5);
-        cloud.setRadius(3); cloud.setDuration(200); cloud.setRadiusPerTick(-.01f);
-        // Hide the vanilla planar particles; the client renders this cloud as a volume.
-        cloud.setParticle(net.minecraft.core.particles.ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT,0x00eff1ed));
-        cloud.setCustomName(Component.literal("alconautics:rupture_cloud"));cloud.setCustomNameVisible(false);
-        BreweryCompat.drunkEffect().ifPresent(e -> cloud.addEffect(new MobEffectInstance(e,600,0)));
-        level.addFreshEntity(cloud);
+        if(level instanceof net.minecraft.server.level.ServerLevel server) VapourCloud.spawn(server,center,3,200);
         for(BlockPos p:positions(t)) level.destroyBlock(p,true);
         level.destroyBlock(worldPosition,true);
         if(level.getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_DOFIRETICK)) {
