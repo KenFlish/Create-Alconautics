@@ -23,13 +23,15 @@ public final class AlconauticsPonder implements PonderPlugin {
     }
     private static ResourceLocation id(String path) { return ResourceLocation.fromNamespaceAndPath(Alconautics.ID,path); }
     private static void text(SceneBuilder s,SceneBuildingUtil u,String message,int x,int y,int z,ItemStack... icons) {
-        if(icons.length>0) {
-            PonderIngredientCard.show(s,80,s.getScene().registerText(message),java.util.List.of(icons));
-            s.idle(90);return;
-        }
         var caption=s.overlay().showText(80).text(message);
         if(x<0) caption.independent();
         else caption.pointAt(u.vector().centerOf(x,y,z)).placeNearTarget();
+        // Create's standard item-only input bubbles, aligned along the screen-facing diagonal.
+        // Two blocks between anchors keep their native 1.5x item renderings apart.
+        for(int i=0;i<icons.length;i++) {
+            double offset=2*i-1;
+            s.overlay().showControls(u.vector().of(offset,.5,offset),Pointing.DOWN,80).withItem(icons[i]);
+        }
         s.idle(90);
     }
     private static void item(SceneBuilder s,SceneBuildingUtil u,ItemStack item,int x,int y,int z) {
