@@ -59,15 +59,17 @@ public final class VisualCheck {
         if(started && Boolean.getBoolean("alconautics.ponderCheck")) {
             ticks++;
             if(ticks>380) {
-                if(ticks==400) Screenshot.grab(mc.gameDirectory,"alconautics-0.1.5-details.png",mc.getMainRenderTarget(),message -> System.out.println("ALCONAUTICS_VISUAL_CHECK: "+message.getString()));
+                if(ticks==400) Screenshot.grab(mc.gameDirectory,"alconautics-0.1.13-details.png",mc.getMainRenderTarget(),message -> System.out.println("ALCONAUTICS_VISUAL_CHECK: "+message.getString()));
                 if(ticks==420) { System.out.println("ALCONAUTICS_PONDER_CHECK: Both scenes and details completed");mc.stop(); }
                 return;
             }
             if(!(mc.screen instanceof net.createmod.ponder.foundation.ui.PonderUI ui)) throw new IllegalStateException("Ponder UI did not open");
-            if(ticks%10==0 && ticks<180) ui.seekToTime(Math.min(ticks*8,1200));
-            if(ticks==185) Screenshot.grab(mc.gameDirectory,"alconautics-0.1.5-apparatus.png",mc.getMainRenderTarget(),message -> System.out.println("ALCONAUTICS_PONDER_CHECK: "+message.getString()));
+            if(ticks%10==0 && ticks<180) ui.seekToTime(Math.min(ticks*8,ui.getActiveScene().getTotalTime()-1));
+            if(ticks==180) ui.seekToTime(ui.getActiveScene().getKeyframeTime(1)+25);
+            if(ticks==185) Screenshot.grab(mc.gameDirectory,"alconautics-0.1.13-apparatus.png",mc.getMainRenderTarget(),message -> System.out.println("ALCONAUTICS_PONDER_CHECK: "+message.getString()));
             if(ticks==185) {
                 var scene=ui.getActiveScene();
+                checkChapters(ui,3,750);
                 var head=(HeadBE)scene.getWorld().getBlockEntity(new net.minecraft.core.BlockPos(2,4,3));
                 if(head.status.isEmpty()) throw new IllegalStateException("Empty apparatus status in Ponder");
                 if(head.tank()==null) {
@@ -81,10 +83,15 @@ public final class VisualCheck {
                 System.out.println("ALCONAUTICS_PONDER_CHECK: "+scene.getTitle()+"; duration="+scene.getTotalTime());
             }
             if(ticks==200) mc.setScreen(net.createmod.ponder.foundation.ui.PonderUI.of(Content.DRY_ITEM.get().getDefaultInstance()));
-            if(ticks>200 && ticks%10==0 && ticks<350) ((net.createmod.ponder.foundation.ui.PonderUI)mc.screen).seekToTime(Math.min((ticks-200)*8,950));
-            if(ticks==305) Screenshot.grab(mc.gameDirectory,"alconautics-0.1.5-dry-chamber.png",mc.getMainRenderTarget(),message -> System.out.println("ALCONAUTICS_PONDER_CHECK: "+message.getString()));
+            if(ticks>200 && ticks%10==0 && ticks<350) ui.seekToTime(Math.min((ticks-200)*8,ui.getActiveScene().getTotalTime()-1));
+            if(ticks==300) ui.seekToTime(140);
+            if(ticks==305) {
+                checkRecipeHint(ui.getActiveScene());
+                Screenshot.grab(mc.gameDirectory,"alconautics-0.1.13-mash.png",mc.getMainRenderTarget(),message -> System.out.println("ALCONAUTICS_PONDER_CHECK: "+message.getString()));
+            }
             if(ticks==355) {
                 var scene=ui.getActiveScene();
+                checkChapters(ui,2,550);
                 if(!(scene.getWorld().getBlockEntity(new net.minecraft.core.BlockPos(1,4,3)) instanceof DryBE d) || !d.items.getStackInSlot(0).is(Herbs.nettle())) throw new IllegalStateException("Ponder dry chamber demonstration failed");
                 System.out.println("ALCONAUTICS_PONDER_CHECK: "+scene.getTitle()+"; duration="+scene.getTotalTime());
             }
@@ -96,6 +103,26 @@ public final class VisualCheck {
             if(ticks==60) Screenshot.grab(mc.gameDirectory,"alconautics-0.1.2-models.png",mc.getMainRenderTarget(),message -> System.out.println("ALCONAUTICS_VISUAL_CHECK: "+message.getString()));
             if(ticks==100) mc.stop();
         }
+    }
+    private static void checkChapters(net.createmod.ponder.foundation.ui.PonderUI ui,int separators,int maximumDuration) {
+        var scene=ui.getActiveScene();
+        if(scene.getKeyframeCount()!=separators || scene.getTotalTime()>maximumDuration) throw new IllegalStateException("Incorrect Ponder stages: "+scene.getKeyframeCount()+", duration="+scene.getTotalTime());
+        int previous=0;
+        for(int i=0;i<separators;i++) {
+            int time=scene.getKeyframeTime(i);
+            if(time-previous<90 || scene.getTotalTime()-time<90) throw new IllegalStateException("Ponder has an empty or crowded stage");
+            ui.seekToTime(time+1);previous=time;
+        }
+        for(int i=separators-1;i>=0;i--) ui.seekToTime(scene.getKeyframeTime(i)+1);
+        ui.seekToTime(scene.getTotalTime()-1);
+    }
+    private static void checkRecipeHint(net.createmod.ponder.foundation.PonderScene scene) {
+        if(scene.getElements().stream().anyMatch(e -> e instanceof net.createmod.ponder.foundation.element.InputWindowElement))
+            throw new IllegalStateException("Mash recipe must not suggest clicking items onto the tank");
+        var cards=scene.getElements().stream().filter(e -> e instanceof dev.alconautics.client.PonderIngredientCard && e.isVisible()).map(e -> (dev.alconautics.client.PonderIngredientCard)e).toList();
+        if(cards.size()!=1 || cards.getFirst().icons().size()!=4) throw new IllegalStateException("Mash must show one shared card containing four ingredients");
+        var expected=List.of(net.minecraft.world.item.Items.SUGAR,net.minecraft.world.item.Items.APPLE,net.minecraft.world.item.Items.POTATO,net.minecraft.world.item.Items.WHEAT);
+        for(int i=0;i<expected.size();i++) if(!cards.getFirst().icons().get(i).is(expected.get(i))) throw new IllegalStateException("Ingredient card has the wrong example order");
     }
     /** Native scene rendering, with no Ponder widgets, captions or game backdrop. */
     private static final class CleanRender extends net.createmod.ponder.foundation.ui.PonderUI {
@@ -118,7 +145,7 @@ public final class VisualCheck {
         DetailsPreview() { super(Component.literal("Alconautics details check")); }
         @Override public void render(GuiGraphics g,int mx,int my,float partial) {
             g.fill(0,0,width,height,0xff303238);
-            g.drawCenteredString(font,"Create: Alconautics 0.1.5",width/2,12,0xffffffff);
+            g.drawCenteredString(font,"Create: Alconautics 0.1.13",width/2,12,0xffffffff);
             g.renderComponentTooltip(font,machineTooltip,20,40);
             var drink=Content.DRINKS.get(new Drink(Drink.Kind.SUGAR,Drink.Variant.STRONG)).get();
             var lines=new java.util.ArrayList<Component>();lines.add(drink.getDefaultInstance().getHoverName());

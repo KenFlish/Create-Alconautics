@@ -2,7 +2,6 @@ package dev.alconautics.client;
 
 import dev.alconautics.*;
 import com.simibubi.create.AllBlocks;
-import com.simibubi.create.AllItems;
 import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import net.createmod.catnip.math.Pointing;
@@ -23,12 +22,22 @@ public final class AlconauticsPonder implements PonderPlugin {
         helper.addStoryBoard(id("dry_chamber"),"mash_and_dry_chamber",AlconauticsPonder::mash);
     }
     private static ResourceLocation id(String path) { return ResourceLocation.fromNamespaceAndPath(Alconautics.ID,path); }
-    private static void text(SceneBuilder s,SceneBuildingUtil u,String message,int x,int y,int z) {
-        s.overlay().showText(100).text(message).pointAt(u.vector().centerOf(x,y,z)).placeNearTarget();
-        s.idle(115);
+    private static void text(SceneBuilder s,SceneBuildingUtil u,String message,int x,int y,int z,ItemStack... icons) {
+        if(icons.length>0) {
+            PonderIngredientCard.show(s,80,s.getScene().registerText(message),java.util.List.of(icons));
+            s.idle(90);return;
+        }
+        var caption=s.overlay().showText(80).text(message);
+        if(x<0) caption.independent();
+        else caption.pointAt(u.vector().centerOf(x,y,z)).placeNearTarget();
+        s.idle(90);
     }
     private static void item(SceneBuilder s,SceneBuildingUtil u,ItemStack item,int x,int y,int z) {
-        s.overlay().showControls(u.vector().topOf(x,y,z),Pointing.DOWN,80).rightClick().withItem(item);
+        // An ingredient icon is not an instruction to use that item on the tank.
+        s.overlay().showControls(u.vector().topOf(x,y,z),Pointing.DOWN,70).withItem(item);
+    }
+    private static void use(SceneBuilder s,SceneBuildingUtil u,ItemStack item,int x,int y,int z) {
+        s.overlay().showControls(u.vector().topOf(x,y,z),Pointing.DOWN,70).rightClick().withItem(item);
     }
     private static void fill(SceneBuilder s,SceneBuildingUtil u,int x,int y,int z,Drink.Kind kind) {
         // Use scene-local coordinates; saved world controller positions are stripped on import.
@@ -52,62 +61,60 @@ public final class AlconauticsPonder implements PonderPlugin {
         });
     }
     private static void apparatus(SceneBuilder s,SceneBuildingUtil u) {
-        s.title("apparatus","The distillation apparatus and condenser");
+        s.title("apparatus","Distillation and cooling");
         s.configureBasePlate(0,0,5);s.scaleSceneView(.75f);s.setSceneOffsetY(-1);s.showBasePlate();s.idle(10);
         s.world().showSection(u.select().fromTo(2,1,3,2,3,3),Direction.DOWN);s.idle(20);
-        fill(s,u,2,2,3,Drink.Kind.SUGAR);
-        text(s,u,"Place a fluid tank above a Blaze Burner and fill it with mash.",2,2,3);
-        s.addKeyframe();s.world().showSection(u.select().position(2,4,3),Direction.DOWN);s.idle(15);
-        text(s,u,"A Distillation Head turns the tank into a distillation apparatus. It also pumps the vapour.",2,4,3);
-        item(s,u,AllItems.WRENCH.asStack(),2,4,3);
-        text(s,u,"Connect a pipe on top or to either side outlet. Rotate the head with a wrench to aim the side outlets.",2,4,3);
+        // Stage 1: assemble the boiler. No tiny introductory chapter on the timeline.
+        s.world().showSection(u.select().position(2,4,3),Direction.DOWN);s.idle(10);
+        s.world().modifyBlock(new BlockPos(2,1,3),b -> b.setValue(BlazeBurnerBlock.HEAT_LEVEL,BlazeBurnerBlock.HeatLevel.SMOULDERING),false);
+        s.world().modifyBlocks(u.select().fromTo(3,2,1,3,4,1),b -> b.setValue(BlockStateProperties.WATERLOGGED,false),false);
+        text(s,u,"Place a Distillation Head on a tank above a Blaze Burner.",2,4,3);
         var whistle=new BlockPos(1,3,3);
         s.world().setBlock(whistle,AllBlocks.STEAM_WHISTLE.getDefaultState().setValue(BlockStateProperties.HORIZONTAL_FACING,Direction.EAST).setValue(com.simibubi.create.content.decoration.steamWhistle.WhistleBlock.WALL,true),false);
         s.world().showSection(u.select().position(whistle),Direction.EAST);
-        text(s,u,"Attach a Steam Whistle to the tank. Heating without one builds pressure and can rupture the apparatus. Superheating builds pressure faster.",1,3,3);
+        fill(s,u,2,2,3,Drink.Kind.SUGAR);
+        text(s,u,"Pump mash into the tank. Add a Steam Whistle to prevent a pressure explosion.",1,3,3);
+        // Stage 2: connect and waterlog the cooling pipes.
         s.addKeyframe();s.world().showSection(u.select().fromTo(0,1,0,4,6,2),Direction.DOWN);
         s.world().showSection(u.select().fromTo(2,5,3,2,6,3),Direction.DOWN);s.idle(20);
-        text(s,u,"Lead a single continuous pipe route into the top of the Condenser Base.",3,1,1);
-        item(s,u,new ItemStack(Items.WATER_BUCKET),3,2,1);
+        text(s,u,"Connect the head to the top of the condenser with pipes. The head pumps the vapour.",3,1,1);
+        use(s,u,new ItemStack(Items.WATER_BUCKET),3,2,1);
         s.world().modifyBlocks(u.select().fromTo(3,2,1,3,4,1),b -> b.setValue(BlockStateProperties.WATERLOGGED,true),false);
-        text(s,u,"Waterlog at least two connected pipes immediately above the condenser. The water surrounds the pipes; vapour travels inside.",3,3,1);
-        s.overlay().showControls(u.vector().topOf(3,1,1),Pointing.DOWN,80).rightClick().withItem(new ItemStack(Items.ICE));
+        text(s,u,"Waterlog at least two connected pipes above the condenser. Water stays outside the pipes.",3,3,1);
+        // Stage 3: supply coolant through the actual block interaction.
+        s.addKeyframe();use(s,u,new ItemStack(Items.ICE),3,1,1);
         s.world().modifyBlockEntity(new BlockPos(3,1,1),CoolerBE.class,c -> c.items.setStackInSlot(0,new ItemStack(Items.ICE)));
-        text(s,u,"Insert snow or ice into the base with right-click. Cooling consumes this supply; snowflake particles indicate operation.",3,1,1);
+        text(s,u,"Right-click the condenser with snow or ice to supply cooling.",3,1,1);
+        // Stage 4: run and collect. Both rates belong to this same stage.
         s.addKeyframe();heat(s,new BlockPos(2,1,3),false);
-        text(s,u,"Normal heating produces 100 mB every 20 seconds. Superheating reduces the interval to 13 seconds.",2,1,3);
+        text(s,u,"Heat the burner: 100 mB every 20 seconds, or every 13 seconds when superheated.",2,1,3);
         heat(s,new BlockPos(2,1,3),true);
         s.world().modifyBlockEntity(new BlockPos(3,1,1),CoolerBE.class,c -> c.output.setFluid(Content.SPIRITS.get(new Drink(Drink.Kind.SUGAR,Drink.Variant.NORMAL)).stack(500)));
-        item(s,u,new ItemStack(Items.GLASS_BOTTLE),3,1,1);
-        text(s,u,"Collect moonshine with glass bottles, or pump it out through any side except the top. A Spout can fill bottles automatically.",3,1,1);
-        item(s,u,AllItems.GOGGLES.asStack(),2,3,3);
-        text(s,u,"Engineer’s Goggles show the apparatus status, mash level, heating and mash type.",2,3,3);
+        use(s,u,new ItemStack(Items.GLASS_BOTTLE),3,1,1);
+        text(s,u,"Collect with glass bottles, or pump moonshine out through the sides or bottom.",3,1,1);
         s.markAsFinished();
     }
     private static void mash(SceneBuilder s,SceneBuildingUtil u) {
-        s.title("mash_and_dry_chamber","Mash varieties and the Dry Chamber");
+        s.title("mash_and_dry_chamber","Mash and herbs");
         s.configureBasePlate(0,0,5);s.scaleSceneView(.75f);s.setSceneOffsetY(-1);s.showBasePlate();
         s.rotateCameraY(90);
         s.world().showSection(u.select().fromTo(0,1,0,4,6,4).substract(u.select().position(1,4,3)),Direction.DOWN);s.idle(20);
         fill(s,u,1,2,1,Drink.Kind.SUGAR);
-        text(s,u,"Mix 1000 mB of water, yeast from Farm & Charm and four ingredients in a Basin with a Mechanical Mixer.",1,2,1);
-        item(s,u,new ItemStack(Items.SUGAR),1,2,1);
-        text(s,u,"Use four portions of sugar to make sugar mash.",1,2,1);
-        s.addKeyframe();fill(s,u,1,2,1,Drink.Kind.FRUIT);item(s,u,new ItemStack(Items.APPLE),1,2,1);
-        text(s,u,"Fruit makes fruit mash. Add four fruits, such as apples.",1,2,1);
-        fill(s,u,1,2,1,Drink.Kind.VEGETABLE);item(s,u,new ItemStack(Items.POTATO),1,2,1);
-        text(s,u,"Vegetables make vegetable mash. Add four vegetables: potatoes, carrots or beetroot.",1,2,1);
-        fill(s,u,1,2,1,Drink.Kind.GRAIN);item(s,u,new ItemStack(Items.WHEAT),1,2,1);
-        text(s,u,"Use four portions of wheat, oat or barley to make grain mash.",1,2,1);
+        // Stage 1: recipe information is independent, never a click hint on a tank.
+        text(s,u,"Mix 1000 mB water, yeast and 4 ingredients in a Basin with a Mechanical Mixer.",-1,0,0);
+        text(s,u,"Use sugar, fruit, vegetables or grain. Grain mash accepts wheat, oat or barley.",-1,0,0,
+            new ItemStack(Items.SUGAR),new ItemStack(Items.APPLE),new ItemStack(Items.POTATO),new ItemStack(Items.WHEAT));
+        // Stage 2: attach the modifier to the existing route.
         s.addKeyframe();s.world().showSection(u.select().position(1,4,3),Direction.UP);s.idle(15);
-        text(s,u,"Attach a Dry Chamber underneath a pipe between the head and the condenser. It is an optional modifier, not a separate pipe route.",1,4,3);
-        item(s,u,new ItemStack(Herbs.ribwort()),1,4,3);
+        text(s,u,"Attach a Dry Chamber underneath a pipe between the head and the condenser.",1,4,3);
+        // Stage 3: demonstrate both mutually exclusive herbs without splitting the alternatives.
+        s.addKeyframe();use(s,u,new ItemStack(Herbs.ribwort()),1,4,3);
         s.world().modifyBlockEntity(new BlockPos(1,4,3),DryBE.class,d -> d.items.setStackInSlot(0,new ItemStack(Herbs.ribwort())));
-        text(s,u,"Ribwort extends the duration of a drink’s positive effect.",1,4,3);
-        s.addKeyframe();item(s,u,new ItemStack(Herbs.nettle()),1,4,3);
+        text(s,u,"Insert ribwort for a longer effect, or nettle for a stronger one.",1,4,3);
+        // Show the alternative; right-click cannot replace an occupied herb slot.
+        item(s,u,new ItemStack(Herbs.nettle()),1,4,3);
         s.world().modifyBlockEntity(new BlockPos(1,4,3),DryBE.class,d -> d.items.setStackInSlot(0,new ItemStack(Herbs.nettle())));
-        text(s,u,"Nettle grants effect level II for 90 seconds. Choose duration or strength; these modifiers do not stack.",1,4,3);
-        text(s,u,"One herb treats 1000 mB. Vegetable moonshine has no positive effect to enhance and does not consume the modifier.",1,4,3);
+        text(s,u,"One herb treats 1000 mB. The modifiers cannot be combined.",1,4,3);
         s.markAsFinished();
     }
 }
