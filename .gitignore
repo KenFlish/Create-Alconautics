@@ -10,3 +10,7 @@ research/
 run-visual/
 __pycache__/
 art/previous-*/
+art/
+dist/
+docs/
+tools/
