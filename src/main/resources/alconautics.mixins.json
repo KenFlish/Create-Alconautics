@@ -10,7 +10,8 @@
     "IntoxicationMixin",
     "DryConnectionMixin",
     "VapourCloudMixin",
-    "TinctureRecipeMixin"
+    "TinctureRecipeMixin",
+    "TinctureBarrelMixin"
   ],
   "client": [
     "TankRendererMixin"

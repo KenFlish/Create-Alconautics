@@ -33,6 +33,8 @@ Infuse moonshine with dandelions or berries in a Create Basin. Dandelion tinctur
 
 Let finished bottles age over the years for longer and stronger effects. Display three dandelion bottles, two berry bottles, or one of each together. Each bottle keeps its own age; moonshine does not age.
 
+Use Brewery's aging barrel to mature tinctures faster: a fresh bottle reaches its improved effect after seven Minecraft days. Dandelion tincture takes 250 mB of moonshine, four dandelions, and two sugar to make 250 mB.
+
 ## Optional Compatibility
 
 ### Sable

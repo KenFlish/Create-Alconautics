@@ -80,7 +80,7 @@ public final class TinctureClientCheck {
         if(ticks==210) { System.out.println("ALCONAUTICS_TINCTURE_CHECK: updated grouped models, 2D inventory icons, Vinery overlay sections and aging tooltip passed");mc.stop(); }
     }
     private static void screenshot(String suffix) {
-        var mc=Minecraft.getInstance();Screenshot.grab(mc.gameDirectory,"alconautics-0.1.11-"+suffix+".png",mc.getMainRenderTarget(),message -> System.out.println(message.getString()));
+        var mc=Minecraft.getInstance();Screenshot.grab(mc.gameDirectory,"alconautics-0.1.12-"+suffix+".png",mc.getMainRenderTarget(),message -> System.out.println(message.getString()));
     }
     private static final class ItemPreview extends Screen {
         ItemPreview() { super(Component.literal("Tincture item tooltip")); }
